@@ -3,8 +3,8 @@
 #
 #   MyDomus
 #   Home Domotic Service
-#   Copyright (c) 2016 Massimiliano Petra (massimiliano.petra@gmail.com)
-#   https://github.com/massimilianopetra/mydomus
+#   Copyright (c) 2016 Salvatore Cavallero (salvatoe.cavallero@gmail.com)
+#   https://github.com/scavallero/mydomus
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@ import sensor
 import logging
 import logging.handlers
 import dbutil
-
-
 
 
 ## SETUP DEFAULTS AND LOGGER ##
@@ -76,7 +74,8 @@ def root(p,m):
 
 if __name__ == "__main__":
     logger.info("Mydomus service started")
-    dbutil.InitDB(config,logger)
+    db = dbutil.dbutil(config,logger)
+    db.InitDB()
     t = threading.Thread(target=sensor.run,args=(logger,config))
     t.start()
     httpapp.run(port=SERVER_PORT,log_handler=logger)

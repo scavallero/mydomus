@@ -1,8 +1,8 @@
 //
 //   AgentArduino.ino
 //   Arduino agent for domotic service
-//   Copyright (C) 2016  Massimiliano Petra (massimiliano.petra@gmail.com)
-//   https://github.com/massimilianopetra/mydomus
+//   Copyright (C) 2016  Salvatore Cavallero (salvatore.cavallero@gmail.com)
+//   https://github.com/scavallero/mydomus
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by

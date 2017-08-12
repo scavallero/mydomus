@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 #   MyDomus - Polling Service
-#   Copyright (c) 2016 Massimiliano Petra (massimiliano.petra@gmail.com)
-#   https://github.com/massimilianopetra/mydomus
+#   Copyright (c) 2016 Salvatore Cavallero (salvatoe.cavallero@gmail.com)
+#   https://github.com/scavallero/mydomus
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import dbutil
 
 Devices = {}
 Sensors = {}
+Config = {}
 
 #########################################################################
 # Embedded sensors routine
@@ -36,8 +37,12 @@ Sensors = {}
 def UpdateSensorValue(Name,Value,logger):
     global Devices
     global Sensors
+    global Config
 
     Sensors[Name] = Value
+    timestamp = time.time()
+    db = dbutil.dbutil(Config,logger)
+    db.AddSensorValue(Name,float(Sensors[Name]),timestamp)
     logger.info('Sensor [%s] read [%s]' % (Name,Sensors[Name]))
 
 def DoRandom(group,logger):
@@ -68,8 +73,12 @@ def run(logger,config):
 
     global Devices
     global Sensors
+    global Config
 
     logger.info("Thread started")
+
+    Config = config
+    db = dbutil.dbutil(config,logger)
     
     @httpapp.addurl('/get/sensor/')
     def getSensor(p,m):
@@ -77,7 +86,6 @@ def run(logger,config):
         global Devices
         global Sensors
         
-        output = ""
         fields = p.split('/')
         if len(fields) == 4: 
             if fields[3] in Sensors.keys():
@@ -86,13 +94,29 @@ def run(logger,config):
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
             return '{"status":"error","value":"missing sensor name"}'
-    
-    if "Sensors" not in config.keys():
-        logger.error("No sensors has been yet configured")
-        return
 
+    @httpapp.addurl('/get/daily/')
+    def getDaily(p,m):
+        
+        global Devices
+        global Sensors
+        global Config
+
+        output = ""
+        db = dbutil.dbutil(Config,logger)
+
+        fields = p.split('/')
+        if len(fields) == 4: 
+            if fields[3] in Sensors.keys():
+                data = db.GetSensorDaily(fields[3])
+                return '{"status":"ok","value":%s}' % data
+            else:
+                return '{"status":"error","value":"sensor not exist"}'  
+        else:
+            return '{"status":"error","value":"missing sensor name"}'
+        
     @httpapp.addurl('/get/sensor/config')
-    def getSensor(p,m):
+    def getSensorConfig(p,m):
         
         global Devices
         global Sensors
@@ -101,6 +125,10 @@ def run(logger,config):
         
     
     # Setup devices sensors and groups
+    if "Sensors" not in config.keys():
+        logger.error("No sensors has been yet configured")
+        return
+    
     Groups = config['Sensors']
     
     logger.info("Begin sensors setup")
@@ -113,7 +141,7 @@ def run(logger,config):
                 elif item == "config":
                     logger.error("Invalid sensor name 'config' reserved keyword")
                 Sensors[item] = '""'
-                dbutil.AddSensosrName(config,logger,item)
+                db.AddSensosrName(item)
                 
                 
     logger.info("End sensors setup")

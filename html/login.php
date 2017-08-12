@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				<ul data-role="listview" data-inset="true">
                     <li>
 						<!-- <form class="form-signin" action="login.php" method="POST"> -->
-                        <form class="form-signin" action="login.php" method="POST">
+                        <form class="form-signin" action="login.php" method="POST" data-ajax="false">
 							<div class="ui-body ui-corner-all">
 								<label for="inputEmail">Email address</label>
 								<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="email">

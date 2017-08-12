@@ -88,7 +88,7 @@ configuration:
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/massimilianopetra/mydomus/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/scavallero/mydomus/tags). 
 
 ## Authors
 
@@ -98,7 +98,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## License
 
-_Copyright © 2016 Massimiliano Petra_
+_Copyright © 2016 Salvatore Cavallero_
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
