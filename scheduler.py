@@ -33,13 +33,13 @@ def run(logger,config):
             sensor.Sensors[name] = []
             # Compute average value
             if len(measure) > 0:
-                timestap = 0.0
+                timestamp = 0.0
                 value= 0.0
                 for i in range(len(measure)):
                     value = value + float(measure[i][0])
-                    timestap = timestap + measure[i][1]
+                    timestamp = timestmap + measure[i][1]
                 value = value / float(len(measure))
-                timestap = timestap  / float(len(measure))
+                timestamp = timestamp  / float(len(measure))
                 db.AddSensorValue(name,str(value),timestamp)
         logger.info("End scheduler tasks")
         time.sleep(300)
