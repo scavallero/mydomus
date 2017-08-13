@@ -35,9 +35,9 @@ def run(logger,config):
             if len(measure) > 0:
                 timestap = 0.0
                 value= 0.0
-                for i in len(measure):
-                    value = value + measure[0]
-                    timestap = timestap + measure[1]
+                for i in range(len(measure)):
+                    value = value + measure[i][0]
+                    timestap = timestap + measure[i][1]
                 value = value / float(len(measure))
                 timestap = timestap  / float(len(measure))
                 db.AddSensorValue(Name,value,timestamp)
