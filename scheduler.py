@@ -36,7 +36,7 @@ def run(logger,config):
                 timestap = 0.0
                 value= 0.0
                 for i in range(len(measure)):
-                    value = value + measure[i][0]
+                    value = value + float(measure[i][0])
                     timestap = timestap + measure[i][1]
                 value = value / float(len(measure))
                 timestap = timestap  / float(len(measure))
