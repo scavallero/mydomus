@@ -39,11 +39,16 @@ def UpdateSensorValue(Name,Value,logger):
     global Sensors
     global Config
 
-    Sensors[Name] = Value
     timestamp = time.time()
-    db = dbutil.dbutil(Config,logger)
-    db.AddSensorValue(Name,float(Sensors[Name]),timestamp)
-    logger.info('Sensor [%s] read [%s]' % (Name,Sensors[Name]))
+    if Name in Sensors.keys():
+        Sensors[Name].append((Value,timestamp))
+    else:
+        Sensors[Name] = []
+        Sensors[Name].append((Value,timestamp))
+        
+    #db = dbutil.dbutil(Config,logger)
+    #db.AddSensorValue(Name,float(Sensors[Name]),timestamp)
+    logger.info('Sensor [%s] read [%s]' % (Name,Value))
 
 def DoRandom(group,logger):
 
@@ -89,7 +94,8 @@ def run(logger,config):
         fields = p.split('/')
         if len(fields) == 4: 
             if fields[3] in Sensors.keys():
-                return '{"status":"ok","value":%s}' % Sensors[fields[3]]
+                value = Sensors[fields[3]][-1][0]
+                return '{"status":"ok","value":%s}' % value
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
@@ -158,4 +164,4 @@ def run(logger,config):
                     DoCpuTempRead(group,logger)
             
         logger.info("End sensors polling")
-        time.sleep(float(config['DelayLoop']))
+        time.sleep(float(config['SamplingPeriod']))
