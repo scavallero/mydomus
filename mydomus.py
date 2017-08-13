@@ -26,6 +26,7 @@ import json
 import threading
 import httpapp
 import sensor
+import scheduler
 import logging
 import logging.handlers
 import dbutil
@@ -76,8 +77,10 @@ if __name__ == "__main__":
     logger.info("Mydomus service started")
     db = dbutil.dbutil(config,logger)
     db.InitDB()
-    t = threading.Thread(target=sensor.run,args=(logger,config))
-    t.start()
+    t1 = threading.Thread(target=sensor.run,args=(logger,config))
+    t1.start()
+    t2 = threading.Thread(target=scheduler.run,args=(logger,config))
+    t2.start()    
     httpapp.run(port=SERVER_PORT,log_handler=logger)
 
 
