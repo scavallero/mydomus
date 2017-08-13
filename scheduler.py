@@ -24,13 +24,20 @@ import sensor
 import dbutil
 
 def run(logger,config):
+
+    # Wait for sensor setup completed
     time.sleep(10)
+    
     db = dbutil.dbutil(config,logger)
     while(True):
         logger.info("Begin scheduler tasks")
         for name in sensor.Sensors:
+
+            # Begin critical thread safe operation
             measure = sensor.Sensors[name]
             sensor.Sensors[name] = []
+            # End critical thread safe operation
+
             # Compute average value
             if len(measure) > 0:
                 timestamp = 0.0

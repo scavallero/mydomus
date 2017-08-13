@@ -80,7 +80,7 @@ class dbutil():
 
         sql = """
               CREATE TABLE IF NOT EXISTS dailyreadings (
-                 ID Int NOT NULL AUTO_INCREMENT,
+                 ID BIGINT NOT NULL AUTO_INCREMENT,
                  SensorID Int,
                  Timestamp Double,
                  Value Double,
