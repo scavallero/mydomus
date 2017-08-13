@@ -80,7 +80,7 @@ function doAll() {
                                         }, true); //true / false to redraw
                                     });
                                 }
-                            }, 30000);
+                            }, 120000);
                         }
                     });
                 });
