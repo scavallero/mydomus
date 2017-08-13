@@ -40,6 +40,6 @@ def run(logger,config):
                     timestap = timestap + measure[i][1]
                 value = value / float(len(measure))
                 timestap = timestap  / float(len(measure))
-                db.AddSensorValue(Name,value,timestamp)
+                db.AddSensorValue(name,str(value),timestamp)
         logger.info("End scheduler tasks")
         time.sleep(300)
