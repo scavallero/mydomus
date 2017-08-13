@@ -42,13 +42,11 @@ def UpdateSensorValue(Name,Value,logger):
     timestamp = time.time()
     if Name in Sensors.keys():
         Sensors[Name].append((Value,timestamp))
+        #db = dbutil.dbutil(Config,logger)
+        #db.AddSensorValue(Name,float(Sensors[Name]),timestamp)
+        logger.info('Sensor [%s] read [%s]' % (Name,Value))
     else:
-        Sensors[Name] = []
-        Sensors[Name].append((Value,timestamp))
-        
-    #db = dbutil.dbutil(Config,logger)
-    #db.AddSensorValue(Name,float(Sensors[Name]),timestamp)
-    logger.info('Sensor [%s] read [%s]' % (Name,Value))
+        logger.error('Update sensor [%s] failure' % Name)
 
 def DoRandom(group,logger):
 
@@ -146,7 +144,7 @@ def run(logger,config):
                     logger.error("Sensor %s duplicated" % item)
                 elif item == "config":
                     logger.error("Invalid sensor name 'config' reserved keyword")
-                Sensors[item] = '""'
+                Sensors[item] = []
                 db.AddSensosrName(item)
                 
                 
