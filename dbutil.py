@@ -28,7 +28,6 @@ class dbutil():
     def __init__(self,config,logger):
         self.config = config
         self.logger = logger
-        print type(self.logger)
 
     def open(self):
         self.db = MySQLdb.connect(host=self.config["DbHost"],   
