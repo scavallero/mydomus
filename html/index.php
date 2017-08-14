@@ -20,9 +20,9 @@ require_once('authenticate.php');
     <body>
         <div data-role="page">
             <div id="panel-menu" data-role="panel" data-display="overlay">
-                <a href="#" url="./Home.html" class="ui-btn">Home</a>
+                <a href="index.php" class="ui-btn" data-ajax="false">Dashboard</a>
                 <a href="#" url="./PageOne.html" class="ui-btn">Page One</a>
-                <a href="logout.php" class="ui-btn">Sign Out</a>
+                <a href="logout.php" class="ui-btn" data-ajax="false">Sign Out</a>
             </div>
             <div data-role="header" data-position="fixed">
                 <h1>MyDomus</h1>
@@ -31,47 +31,6 @@ require_once('authenticate.php');
             <div id="main" role="main" class="ui-content">
                 <div data-role="collapsible-set"  id="sensorlist">
                 </div>
-                <!--
-				<div data-role="collapsible">
-                    <h4>Sensor 1</h4>
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <div id="gauge_temp">
-                            </div>
-                        </div>
-                        <div class="ui-block-b">
-                            <div id="graph_temp">
-                            </div>
-                        </div>
-                    </div>
-				</div>
-				<div data-role="collapsible">
-                    <h4>Sensor 2</h4>
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <div id="gauge_temp_2">
-                            </div>
-                        </div>
-                        <div class="ui-block-b">
-                            <div id="graph_temp_2">
-                            </div>
-                        </div>
-                    </div>
-				</div>
-				<div data-role="collapsible">
-                    <h4>Sensor 3</h4>
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <div id="gauge_temp_3">
-                            </div>
-                        </div>
-                        <div class="ui-block-b">
-                            <div id="graph_temp_3">
-                            </div>
-                        </div>
-                    </div>
-				</div>
-                -->
             </div>
         </div>
         <script>

@@ -20,9 +20,25 @@
 #
 
 import time
+import datetime
 import sensor
 import dbutil
 
+activity = [True]*4
+
+def doActivity(a,db,logger):
+
+    global activity
+
+    if activity[a]:
+        logger.info("Begin daily activity")
+        activity[a] = False
+        if a == 0:
+            activity[3] = True
+        else:
+            activity[a-1] = True  
+        logger.info("End daily activity")
+    
 def run(logger,config):
 
     # Wait for sensor setup completed
@@ -31,6 +47,8 @@ def run(logger,config):
     db = dbutil.dbutil(config,logger)
     while(True):
         logger.info("Begin scheduler tasks")
+        now = datetime.datetime.now()
+        
         for name in sensor.Sensors:
 
             # Begin critical thread safe operation
@@ -48,5 +66,9 @@ def run(logger,config):
                 value = value / float(len(measure))
                 timestamp = timestamp  / float(len(measure))
                 db.AddSensorValue(name,value,timestamp)
+
+        if now.hour % 6 == 0:
+            doActivity(now.hour/6,db,logger)
+
         logger.info("End scheduler tasks")
         time.sleep(300)
