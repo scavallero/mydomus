@@ -175,4 +175,19 @@ class dbutil():
 
         self.cur.execute(sql)        
         self.close()
+
+    def AddMeasureAverage(self,hstart,hend):
+        self.open()
+        self.use()
+
+        sql = """
+            INSERT INTO measures (SensorID,Timestamp,Value)
+            SELECT SensorID, AVG(Timestamp), AVG(Value) FROM dailyreadings d
+            WHERE d.Timestamp < %f AND d.Timestamp > %f
+            GROUP BY d.SensorID;
+              """ % (hend,hstart)
+
+        self.cur.execute(sql)        
+        self.close()       
+        
         

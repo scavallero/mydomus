@@ -36,11 +36,13 @@ def doActivity(a,config,logger):
     if activity[a]:
         logger.info("Begin daily activity")
         activity[a] = False
+        # Add measure average for the last 6 hours
+        db.AddMeasureAverage(h-6*3600,h)
         if a == 0:
             activity[3] = True
             db.ClearSensorDaily()
         else:
-            activity[a-1] = True  
+            activity[a-1] = True
         logger.info("End daily activity")
     
 def run(logger,config):
