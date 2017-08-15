@@ -26,15 +26,19 @@ import dbutil
 
 activity = [True]*4
 
-def doActivity(a,db,logger):
+def doActivity(a,config,logger):
 
     global activity
 
+    h = ((int(time.time())/3600))*3600
+    db = dbutil.dbutil(config,logger)
+    
     if activity[a]:
         logger.info("Begin daily activity")
         activity[a] = False
         if a == 0:
             activity[3] = True
+            db.ClearSensorDaily()
         else:
             activity[a-1] = True  
         logger.info("End daily activity")

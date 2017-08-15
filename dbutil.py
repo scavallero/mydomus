@@ -88,6 +88,17 @@ class dbutil():
               );
               """ 
         self.cur.execute(sql)
+
+        sql = """
+              CREATE TABLE IF NOT EXISTS measures (
+                 ID BIGINT NOT NULL AUTO_INCREMENT,
+                 SensorID Int,
+                 Timestamp Double,
+                 Value Double,
+                 PRIMARY KEY (ID)
+              );
+              """
+        self.cur.execute(sql)
         
         self.close()
         
@@ -150,3 +161,18 @@ class dbutil():
         
         self.close()
         return output
+
+    def ClearSensorDaily(self):
+        self.open()
+        self.use()
+
+        h = time.time()-(48*3600)
+        
+        sql = """
+            DELETE FROM dailyreadings d
+            WHERE d.Timestamp < %f;
+              """ % h
+
+        self.cur.execute(sql)        
+        self.close()
+        
