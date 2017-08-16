@@ -139,9 +139,11 @@ def run(logger,config):
     Groups = config['Sensors']
     
     logger.info("Begin sensors setup")
+    t = time.time()
     for key in Groups:
         group=Groups[key]
         if group['Status'] == 'On':
+            Groups[key]['Timestamp'] = t
             for item in group['Peripherials']:
                 if item in Sensors.keys():
                     logger.error("Sensor %s duplicated" % item)
@@ -157,13 +159,25 @@ def run(logger,config):
     # Main sensor loop
     while(True):
         logger.info("Begin sensosrs polling")
+        t = time.time()
         for key in Groups:
             group=Groups[key]
             if group['Status'] == 'On':
-                if group['Type'] == "random":
-                    DoRandom(group,logger)
-                elif group['Type'] == "cputemp":
-                    DoCpuTempRead(group,logger)
+                if 'Delay' in Groups[key].keys():
+                    if t-Groups[key]['Timestamp'] > Groups[key]['Delay']:
+                        # Delayed group
+                        Groups[key]['Timestamp'] = t
+                        if group['Type'] == "random":
+                            DoRandom(group,logger)
+                        elif group['Type'] == "cputemp":
+                            DoCpuTempRead(group,logger)
+                else:
+                    # Non delayed group
+                    Groups[key]['Timestamp'] = t
+                    if group['Type'] == "random":
+                        DoRandom(group,logger)
+                    elif group['Type'] == "cputemp":
+                        DoCpuTempRead(group,logger)            
             
         logger.info("End sensors polling")
         time.sleep(float(config['SamplingPeriod']))
