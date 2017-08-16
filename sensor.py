@@ -21,6 +21,7 @@
 
 import time
 import json
+import threading
 import httpapp
 import subprocess
 import random
@@ -49,6 +50,25 @@ def UpdateSensorValue(Name,Value,logger):
     else:
         logger.error('Update sensor [%s] failure' % Name)
 
+def DoWunder(group,logger):
+
+    if ('ApiKey' in group.keys()) and ('IDStation' in group.keys()):
+        apikey = group['ApiKey']
+        idstation = group['IDStation']
+        resp = requests.get("http://api.wunderground.com/api/%s/conditions/q/pws:%s.json" % (apikey,idstation), data=None)
+        data = resp.json()
+        #print json.dumps(data, sort_keys=True, indent=4)
+
+        for item in group['Peripherials']:
+
+            sensor = group['Peripherials'][item]
+            if sensor['Type'] == "temp_c":
+                value = str(data["current_observation"]["temp_c"])
+
+            UpdateSensorValue(item, value,logger)
+    else:
+        logger.error("Missing Apikey or IDStation")
+        
 def DoRandom(group,logger):
 
     for item in group['Peripherials']:
@@ -171,13 +191,20 @@ def run(logger,config):
                             DoRandom(group,logger)
                         elif group['Type'] == "cputemp":
                             DoCpuTempRead(group,logger)
+                        elif group['Type'] == "wunderground":
+                            t = threading.Thread(target=DoWunder,args=(group,logger))
+                            t.start()
+                            
                 else:
                     # Non delayed group
                     Groups[key]['Timestamp'] = t
                     if group['Type'] == "random":
                         DoRandom(group,logger)
                     elif group['Type'] == "cputemp":
-                        DoCpuTempRead(group,logger)            
+                        DoCpuTempRead(group,logger)
+                    elif group['Type'] == "wunderground":
+                        t = threading.Thread(target=DoWunder,args=(group,logger))
+                        t.start()
             
         logger.info("End sensors polling")
         time.sleep(float(config['SamplingPeriod']))
