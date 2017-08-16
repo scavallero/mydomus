@@ -74,7 +74,7 @@ def run(logger,config):
                 db.AddSensorValue(name,value,timestamp)
 
         if now.hour % 6 == 0:
-            doActivity(now.hour/6,db,logger)
+            doActivity(now.hour/6,config,logger)
 
         logger.info("End scheduler tasks")
         time.sleep(300)
