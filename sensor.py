@@ -28,6 +28,7 @@ import dbutil
 
 Devices = {}
 Sensors = {}
+LastRead = {}
 Config = {}
 
 #########################################################################
@@ -38,12 +39,12 @@ def UpdateSensorValue(Name,Value,logger):
     global Devices
     global Sensors
     global Config
+    global LastRead
 
     timestamp = time.time()
     if Name in Sensors.keys():
         Sensors[Name].append((Value,timestamp))
-        #db = dbutil.dbutil(Config,logger)
-        #db.AddSensorValue(Name,float(Sensors[Name]),timestamp)
+        LastRead[Name] = (Value,timestamp)
         logger.info('Sensor [%s] read [%s]' % (Name,Value))
     else:
         logger.error('Update sensor [%s] failure' % Name)
@@ -77,6 +78,7 @@ def run(logger,config):
     global Devices
     global Sensors
     global Config
+    global LastRead
 
     logger.info("Thread started")
 
@@ -88,11 +90,12 @@ def run(logger,config):
         
         global Devices
         global Sensors
+        global LastRead
         
         fields = p.split('/')
         if len(fields) == 4: 
-            if fields[3] in Sensors.keys():
-                value = Sensors[fields[3]][-1][0]
+            if fields[3] in LastRead.keys():
+                value = LastRead[fields[3]][0]
                 return '{"status":"ok","value":%s}' % value
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
@@ -145,6 +148,7 @@ def run(logger,config):
                 elif item == "config":
                     logger.error("Invalid sensor name 'config' reserved keyword")
                 Sensors[item] = []
+                LastRead[item] = ("","")
                 db.AddSensosrName(item)
                 
                 
