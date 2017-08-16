@@ -21,6 +21,7 @@
 
 import time
 import json
+import requests
 import threading
 import httpapp
 import subprocess
@@ -159,11 +160,10 @@ def run(logger,config):
     Groups = config['Sensors']
     
     logger.info("Begin sensors setup")
-    t = time.time()
     for key in Groups:
         group=Groups[key]
         if group['Status'] == 'On':
-            Groups[key]['Timestamp'] = t
+            Groups[key]['Timestamp'] = "NA"
             for item in group['Peripherials']:
                 if item in Sensors.keys():
                     logger.error("Sensor %s duplicated" % item)
@@ -183,7 +183,7 @@ def run(logger,config):
         for key in Groups:
             group=Groups[key]
             if group['Status'] == 'On':
-                if 'Delay' in Groups[key].keys():
+                if 'Delay' in Groups[key].keys() and Groups[key]['Timestamp'] != "NA":
                     if t-Groups[key]['Timestamp'] > Groups[key]['Delay']:
                         # Delayed group
                         Groups[key]['Timestamp'] = t
