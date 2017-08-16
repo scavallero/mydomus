@@ -169,8 +169,8 @@ class dbutil():
         h = time.time()-(48*3600)
         
         sql = """
-            DELETE FROM dailyreadings d
-            WHERE d.Timestamp < %f;
+            DELETE FROM dailyreadings
+            WHERE Timestamp < %f;
               """ % h
 
         self.cur.execute(sql)        
