@@ -94,7 +94,9 @@ class dbutil():
                  ID BIGINT NOT NULL AUTO_INCREMENT,
                  SensorID Int,
                  Timestamp Double,
-                 Value Double,
+                 AvgValue Double,
+                 MaxValue Double,
+                 MinValue Double,
                  PRIMARY KEY (ID)
               );
               """
@@ -181,8 +183,8 @@ class dbutil():
         self.use()
 
         sql = """
-            INSERT INTO measures (SensorID,Timestamp,Value)
-            SELECT SensorID, AVG(Timestamp), AVG(Value) FROM dailyreadings d
+            INSERT INTO measures (SensorID,Timestamp,AvgValue,MaxValue,MinValue)
+            SELECT SensorID, AVG(Timestamp), AVG(Value), MAX(Value), MIN(Value) FROM dailyreadings d
             WHERE d.Timestamp < %f AND d.Timestamp > %f
             GROUP BY d.SensorID;
               """ % (hend,hstart)

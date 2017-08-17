@@ -65,6 +65,16 @@ def DoWunder(group,logger):
             sensor = group['Peripherials'][item]
             if sensor['Type'] == "temp_c":
                 value = str(data["current_observation"]["temp_c"])
+                print item,value
+            elif sensor['Type'] == "relative_humidity":
+                value = data["current_observation"]["relative_humidity"].split("%")[0]
+                print item,value
+            elif sensor['Type'] == "pressure_mb":
+                value = str(data["current_observation"]["pressure_mb"])
+                print item,value    
+            elif sensor['Type'] == "wind_kph":
+                value = str(data["current_observation"]["wind_kph"])
+                print item,value
 
             UpdateSensorValue(item, value,logger)
     else:
