@@ -13,8 +13,8 @@ function doHistory(sensor,param) {
 			if (sensor == sensorname) {
 				console.log("Sensor exists!");
 			}
-		}
-	}
+		});
+	});
 }
 
 function doDashboard() {
