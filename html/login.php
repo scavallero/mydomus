@@ -2,11 +2,13 @@
 session_start();
 $email = null;
 $password = null;
+$adminemail = 'user@gmail.com';
+$adminpassword = 'password';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST["email"]) && !empty($_POST["password"])) {
         $email = $_POST["email"];
         $password = $_POST["password"];     
-        if($email == 'user@gmail.com' && $password == 'password') {
+        if($email == $adminemail && $password == $adminpassword) {
             $_SESSION["authenticated"] = 'true';
             header("Location: index.php", true, 302);
             exit;

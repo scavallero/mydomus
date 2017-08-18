@@ -2,7 +2,15 @@
  * Get the current time
  */
  
-function doAll() {
+function doHistory(sensor,param) {
+    doTheme();
+    doStyle();
+	console.log("Historical Data !!");
+	console.log(sensor);
+	console.log(param);
+}
+
+function doDashboard() {
 
     doTheme();
     doStyle();
