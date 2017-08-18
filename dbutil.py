@@ -164,6 +164,30 @@ class dbutil():
         self.close()
         return output
 
+    def GetSensorHistory(self,Name):
+        self.open()
+        self.use()
+        
+        sql = """
+            SELECT Timestamp,AvgMeasure FROM measures m
+            JOIN sensors s on m.SensorID = s.ID
+            WHERE s.Name = '%s';
+              """ % Name
+
+        output = "["
+        self.cur.execute(sql)
+        i = True
+        for row in self.cur:
+            if i:
+                i = False
+                output = output + "[%f,%f]" % (row[0]*1000.0,row[1])
+            else:
+                output = output + ",[%f,%f]" % (row[0]*1000.0,row[1])
+        output = output + "]"
+        
+        self.close()
+        return output
+    
     def ClearSensorDaily(self):
         self.open()
         self.use()

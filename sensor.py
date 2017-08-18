@@ -152,6 +152,26 @@ def run(logger,config):
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
             return '{"status":"error","value":"missing sensor name"}'
+
+    @httpapp.addurl('/get/history/')
+    def getHistory(p,m):
+        
+        global Devices
+        global Sensors
+        global Config
+
+        output = ""
+        db = dbutil.dbutil(Config,logger)
+
+        fields = p.split('/')
+        if len(fields) == 4: 
+            if fields[3] in Sensors.keys():
+                data = db.GetSensorHistory(fields[3])
+                return '{"status":"ok","value":%s}' % data
+            else:
+                return '{"status":"error","value":"sensor not exist"}'  
+        else:
+            return '{"status":"error","value":"missing sensor name"}'
         
     @httpapp.addurl('/get/sensor/config')
     def getSensorConfig(p,m):

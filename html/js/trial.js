@@ -8,6 +8,12 @@ function doHistory(sensor,param) {
 	console.log("Historical Data !!");
 	console.log(sensor);
 	console.log(param);
+	jQuery.each(groups, function(item, val) {
+        jQuery.each(val['Peripherials'], function(sensorname, val) {
+			if sensor == sensorname {
+				console.log("Sensor exists!);
+		}
+	}
 }
 
 function doDashboard() {
