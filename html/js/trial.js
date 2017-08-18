@@ -8,11 +8,15 @@ function doHistory(sensor,param) {
 	console.log("Historical Data !!");
 	console.log(sensor);
 	console.log(param);
-	jQuery.each(groups, function(item, val) {
-        jQuery.each(val['Peripherials'], function(sensorname, val) {
-			if (sensor == sensorname) {
-				console.log("Sensor exists!");
-			}
+	$.post("gateway.php",{"url": "/get/sensor/config"},function(response){
+        var jsonresp = JSON.parse(response);
+        var groups = jsonresp['value'];
+		jQuery.each(groups, function(item, val) {
+			jQuery.each(val['Peripherials'], function(sensorname, val) {
+				if (sensor == sensorname) {
+					console.log("Sensor exists!");
+				}
+			});
 		});
 	});
 }
