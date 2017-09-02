@@ -56,7 +56,7 @@ SERVER_PORT = config["ServerPort"]
         
 logger = logging.getLogger(__name__)
 logger.setLevel(LOG_LEVEL)
-handler_logfile = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3)
+handler_logfile = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=30)
 handler_stream = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(module)-10s %(message)s')
 handler_logfile.setFormatter(formatter)
