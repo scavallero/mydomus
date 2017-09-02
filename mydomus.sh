@@ -16,7 +16,7 @@ DAEMON=$DIR/mydomus.py
 DAEMON_NAME=mydomus
 
 # Add any command line options for your daemon here
-DAEMON_OPTS="--confdir /etc/mydomus 2> /var/log/mydomus/stderr.log 1> /var/log/mydomus/stdout.log"
+DAEMON_OPTS="--confdir /etc/mydomus"
 
 # This next line determines what user the script runs as.
 # Root generally not recommended but necessary if you are using the Raspberry Pi GPIO from Python.
