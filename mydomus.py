@@ -64,7 +64,11 @@ handler_stream.setFormatter(formatter)
 logger.addHandler(handler_logfile)
 logger.addHandler(handler_stream)
 
-   
+if "RedirectOutput" in config.keys():
+    if config["RedirectOutput"] == "True":
+        sys.stderr = open('/var/log/mydomus/stderr.log', 'w')
+        sys.stdouy = open('/var/log/mydomus/stdout.log', 'w')
+        
 ### ADDED API ###
 
 @httpapp.addurl('/')

@@ -75,6 +75,9 @@ def DoWunder(group,logger):
             elif sensor['Type'] == "wind_kph":
                 value = str(data["current_observation"]["wind_kph"])
                 print item,value
+            elif sensor['Type'] == "precip_1hr":
+                value = str(data["current_observation"]["precip_1hr_metric"])
+                print item,value
 
             UpdateSensorValue(item, value,logger)
     else:
