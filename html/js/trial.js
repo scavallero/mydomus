@@ -15,6 +15,35 @@ function doHistory(sensor,param) {
 			jQuery.each(val['Peripherials'], function(sensorname, val) {
 				if (sensor == sensorname) {
 					console.log("Sensor exists!");
+                    var style = graph_style;
+                    style.chart.backgroundColor = "#FFFFFF";
+                    style.title.text = 'History Data';
+                    style.series = [{
+                        type: 'area',
+                        name: 'History',
+                        data: 
+[[
+1504704795697,
+9
+],
+[
+1504704960922.6,
+13.3
+],
+[
+1504705261024.7,
+12.6
+],
+[
+1504705561077.9,
+12.9
+],
+[
+1504705861127.7002,
+9.5
+]]
+                    }];
+                    var chart1 = Highcharts.chart('hdata',style);
 				}
 			});
 		});
@@ -36,14 +65,13 @@ function doDashboard() {
                 html +=   '<h4>'+sensorname+'</h4>';
                 html +=   '<div class="ui-grid-a ui-responsive">'
                 html +=     '<div class="ui-block-a">';
-                html +=       '<div id="gauge_'+sensorname+'">';
-                html +=       '</div>';
+                html +=       '<div id="gauge_'+sensorname+'"/>';
                 html +=     '</div>';
                 html +=     '<div class="ui-block-b">';
-                html +=       '<div id="graph_'+sensorname+'">';
-                html +=       '</div>';
+                html +=       '<div id="graph_'+sensorname+'"/>';
                 html +=     '</div>';
                 html +=   '</div>';
+                html +=   '<a href="history.php?sensor='+sensorname+'&param=null'+'" data-ajax="false" class="ui-btn">View history</a>';
                 html += '</div>';
                 $("#sensorlist").append(html).collapsibleset('refresh');;
                 
