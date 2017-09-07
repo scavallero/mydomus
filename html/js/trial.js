@@ -14,36 +14,19 @@ function doHistory(sensor,param) {
 		jQuery.each(groups, function(item, val) {
 			jQuery.each(val['Peripherials'], function(sensorname, val) {
 				if (sensor == sensorname) {
-					console.log("Sensor exists!");
-                    var style = graph_style;
-                    style.chart.backgroundColor = "#FFFFFF";
-                    style.title.text = 'History Data';
-                    style.series = [{
-                        type: 'area',
-                        name: 'History',
-                        data: 
-[[
-1504704795697,
-9
-],
-[
-1504704960922.6,
-13.3
-],
-[
-1504705261024.7,
-12.6
-],
-[
-1504705561077.9,
-12.9
-],
-[
-1504705861127.7002,
-9.5
-]]
-                    }];
-                    var chart1 = Highcharts.chart('hdata',style);
+					$.post("gateway.php",{"url": "/get/history/"+sensorname},function(response){
+						var newVal = JSON.parse(response);
+						var data = newVal.value;
+						var style = graph_style;
+						style.chart.backgroundColor = "#FFFFFF";
+						style.title.text = 'History Data';
+						style.series = [{
+							type: 'area',
+							name: 'History',
+							data: data
+						}];
+						var chart1 = Highcharts.chart('hdata',style);
+					});
 				}
 			});
 		});

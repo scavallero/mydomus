@@ -4,7 +4,7 @@ require_once('authenticate.php');
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>MyDomus</title>
+        <title>MyDomus Alerts</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="css/mydomus.css" />
 		<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
@@ -25,16 +25,14 @@ require_once('authenticate.php');
                 <a href="logout.php" class="ui-btn" data-ajax="false">Sign Out</a>
             </div>
             <div data-role="header" data-position="fixed">
-                <h1>MyDomus</h1>
+                <h1>MyDomus Alerts</h1>
                 <a href="#panel-menu" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext">Menu</a>
             </div>
             <div id="main" role="main" class="ui-content">
-                <div data-role="collapsible-set"  id="sensorlist">
-                </div>
+                <div id="alerts"/>
+                <a href="index.php" data-ajax="false" class="ui-btn">Back to dashboard</a>
             </div>
         </div>
         <script>
-        doDashboard();
-        </script>
     </body>
 </html>
