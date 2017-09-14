@@ -49,7 +49,14 @@ CWD = os.path.dirname(os.path.realpath(__file__))
 # Embedded sensors routine
 #########################################################################
 
-def UpdateSensorValue(Name,Value):
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+    
+def UpdateSensorValue(Name,Value,logger):
     global Devices
     global Sensors
     global Config
@@ -57,9 +64,12 @@ def UpdateSensorValue(Name,Value):
 
     timestamp = time.time()
     if Name in Sensors.keys():
-        Sensors[Name].append((Value,timestamp))
-        LastRead[Name] = (Value,timestamp)
-        logger.info('Sensor [%s] read [%s]' % (Name,Value))
+        if is_number(Value):
+            Sensors[Name].append((Value,timestamp))
+            LastRead[Name] = (Value,timestamp)
+            logger.info('Sensor [%s] read [%s]' % (Name,Value))
+        else:
+            logger.error('Update sensor [%s] failure for value [%s]' % (Name,Value))
     else:
         logger.error('Update sensor [%s] failure' % Name)
 
