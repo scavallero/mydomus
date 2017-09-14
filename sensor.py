@@ -26,18 +26,30 @@ import threading
 import httpapp
 import subprocess
 import random
+import logging
 import dbutil
+import pattern
+import os
+
+#########################################################################
+# Module setup
+########################################################################
+
+logger = logging.getLogger("Mydomus")
 
 Devices = {}
 Sensors = {}
 LastRead = {}
 Config = {}
 
+CWD = os.path.dirname(os.path.realpath(__file__))
+
+
 #########################################################################
 # Embedded sensors routine
 #########################################################################
 
-def UpdateSensorValue(Name,Value,logger):
+def UpdateSensorValue(Name,Value):
     global Devices
     global Sensors
     global Config
@@ -51,7 +63,7 @@ def UpdateSensorValue(Name,Value,logger):
     else:
         logger.error('Update sensor [%s] failure' % Name)
 
-def DoWunder(group,logger):
+def DoWunder(group):
 
     if ('ApiKey' in group.keys()) and ('IDStation' in group.keys()):
         apikey = group['ApiKey']
@@ -79,11 +91,11 @@ def DoWunder(group,logger):
                 value = str(data["current_observation"]["precip_1hr_metric"])
                 print item,value
 
-            UpdateSensorValue(item, value,logger)
+            UpdateSensorValue(item, value)
     else:
         logger.error("Missing Apikey or IDStation")
         
-def DoRandom(group,logger):
+def DoRandom(group):
 
     for item in group['Peripherials']:
 
@@ -91,10 +103,10 @@ def DoRandom(group,logger):
 
         start_int = sensor['RangeMin']
         end_init = sensor['RangeMax']
-        UpdateSensorValue(item, str(random.randint(start_int,end_init)),logger)
+        UpdateSensorValue(item, str(random.randint(start_int,end_init)))
         
 
-def DoCpuTempRead(group,logger):
+def DoCpuTempRead(group):
 
     for item in group['Peripherials']:
 
@@ -103,11 +115,51 @@ def DoCpuTempRead(group,logger):
         bashCommand = "cat /sys/class/thermal/thermal_zone0/temp"
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
-        UpdateSensorValue(item,output.strip(),logger)
+        UpdateSensorValue(item,output.strip())
+
+def CheckExtCmd(group):
+    result = True
+    for item in group['Peripherials']:
+
+        sensor = group['Peripherials'][item]
+
+        if "command" not in sensor.keys():
+            result = False
+            logger.error("Missing 'command' parameter for extcmd group")
+        if "pattern" not in sensor.keys():
+            result = False
+            logger.error("Missing 'pattern' parameter for extcmd group")
+        if "value" not in sensor.keys():
+            result = False
+            logger.error("Missing 'value' parameter for extcmd group")
+        if "unit" not in sensor.keys():
+            result = False
+            logger.error("Missing 'unit' parameter for extcmd group")
+            
+            
+    return result
+
+def DoExtCmd(group):
+
+    for item in group['Peripherials']:
+
+        sensor = group['Peripherials'][item]
+        #bashCommand = os.path.join(".","plugins",sensor['command'])
+        bashCommand = os.path.join(CWD,"plugins",sensor['command'])
+        logger.debug("ExtCmd: "+bashCommand)
+        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE,cwd=os.path.join(CWD,"plugins"))
+        output, error = process.communicate()
+
+        p = pattern.parser()
+        p.check(sensor['pattern'],output)
+        logger.debug("Result: "+output)
+        UpdateSensorValue(item,p.field[sensor['value']-1].strip())
+        
+                
         
 #########################################################################
         
-def run(logger,config):
+def run(config):
 
     global Devices
     global Sensors
@@ -117,7 +169,7 @@ def run(logger,config):
     logger.info("Thread started")
 
     Config = config
-    db = dbutil.dbutil(config,logger)
+    db = dbutil.dbutil(config)
     
     @httpapp.addurl('/get/sensor/')
     def getSensor(p,m):
@@ -144,7 +196,7 @@ def run(logger,config):
         global Config
 
         output = ""
-        db = dbutil.dbutil(Config,logger)
+        db = dbutil.dbutil(Config)
 
         fields = p.split('/')
         if len(fields) == 4: 
@@ -164,12 +216,12 @@ def run(logger,config):
         global Config
 
         output = ""
-        db = dbutil.dbutil(Config,logger)
+        db = dbutil.dbutil(Config)
 
         fields = p.split('/')
         if len(fields) == 4: 
             if fields[3] in Sensors.keys():
-                data = db.GetSensorHistory(fields[3])
+                data = db.GetSensorHistory(fields[3],True)
                 return '{"status":"ok","value":%s}' % data
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
@@ -221,22 +273,26 @@ def run(logger,config):
                         # Delayed group
                         Groups[key]['Timestamp'] = t
                         if group['Type'] == "random":
-                            DoRandom(group,logger)
+                            DoRandom(group)
                         elif group['Type'] == "cputemp":
-                            DoCpuTempRead(group,logger)
+                            DoCpuTempRead(group)
+                        elif group['Type'] == "extcmd":
+                            DoExtCmd(group)
                         elif group['Type'] == "wunderground":
-                            t = threading.Thread(target=DoWunder,args=(group,logger))
+                            t = threading.Thread(target=DoWunder,args=(group,))
                             t.start()
                             
                 else:
                     # Non delayed group
                     Groups[key]['Timestamp'] = t
                     if group['Type'] == "random":
-                        DoRandom(group,logger)
+                        DoRandom(group)
                     elif group['Type'] == "cputemp":
-                        DoCpuTempRead(group,logger)
+                        DoCpuTempRead(group)
+                    elif group['Type'] == "extcmd":
+                        DoExtCmd(group)
                     elif group['Type'] == "wunderground":
-                        t = threading.Thread(target=DoWunder,args=(group,logger))
+                        t = threading.Thread(target=DoWunder,args=(group,))
                         t.start()
             
         logger.info("End sensors polling")

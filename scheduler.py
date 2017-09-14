@@ -22,16 +22,22 @@
 import time
 import datetime
 import sensor
+import logging
 import dbutil
 
+#########################################################################
+# Module setup
+########################################################################
+
+logger = logging.getLogger("Mydomus")
 activity = [True]*4
 
-def doActivity(a,config,logger):
+def doActivity(a,config):
 
     global activity
 
     h = ((int(time.time())/3600))*3600
-    db = dbutil.dbutil(config,logger)
+    db = dbutil.dbutil(config)
     
     if activity[a]:
         logger.info("Begin daily activity")
@@ -46,12 +52,12 @@ def doActivity(a,config,logger):
             activity[a-1] = True
         logger.info("End daily activity")
     
-def run(logger,config):
+def run(config):
 
     # Wait for sensor setup completed
     time.sleep(10)
     
-    db = dbutil.dbutil(config,logger)
+    db = dbutil.dbutil(config)
     while(True):
         logger.info("Begin scheduler tasks")
         now = datetime.datetime.now()
@@ -75,7 +81,7 @@ def run(logger,config):
                 db.AddSensorValue(name,value,timestamp)
 
         if now.hour % 6 == 0:
-            doActivity(now.hour/6,config,logger)
+            doActivity(now.hour/6,config)
 
         logger.info("End scheduler tasks")
         time.sleep(300)

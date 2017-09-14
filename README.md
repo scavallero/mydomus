@@ -9,7 +9,6 @@ Currently supported sensors are:
 * 123Solar Solar Web logger
 
 
-
 ## Installing
 
 To install mydomus service follow these steps:

@@ -22,12 +22,18 @@
 
 import MySQLdb
 import time
+import logging
+
+#########################################################################
+# Module setup
+########################################################################
+
+logger = logging.getLogger("Mydomus")
 
 class dbutil():
     
-    def __init__(self,config,logger):
+    def __init__(self,config):
         self.config = config
-        self.logger = logger
 
     def open(self):
         self.db = MySQLdb.connect(host=self.config["DbHost"],   
@@ -46,18 +52,18 @@ class dbutil():
         self.db.close()
         
     def InitDB(self):
-        self.logger.info("Init database")
+        logger.info("Init database")
         if "DbHost" not in self.config.keys():
-            self.logger.error("Missing DbHost in config file")
+            logger.error("Missing DbHost in config file")
             return False
         if "DbUser" not in self.config.keys():
-            self.logger.error("Missing DbUser in config file")
+            logger.error("Missing DbUser in config file")
             return False
         if "DbPassword" not in self.config.keys():
-            self.logger.error("Missing DbPassword in config file")
+            logger.error("Missing DbPassword in config file")
             return False
         if "DbName" not in self.config.keys():
-            self.logger.error("Missing DbName in config file")
+            logger.error("Missing DbName in config file")
             return False
 
         self.open()
@@ -104,7 +110,7 @@ class dbutil():
         
         self.close()
         
-        self.logger.info("Init database completed")
+        logger.info("Init database completed")
 
         return True
 
@@ -164,15 +170,22 @@ class dbutil():
         self.close()
         return output
 
-    def GetSensorHistory(self,Name):
+    def GetSensorHistory(self,Name,Group=False):
         self.open()
         self.use()
-        
-        sql = """
-            SELECT Timestamp,AvgMeasure FROM measures m
-            JOIN sensors s on m.SensorID = s.ID
-            WHERE s.Name = '%s';
-              """ % Name
+
+        if Group:
+            sql = """
+                SELECT FLOOR(Timestamp/86400)*86400 AS Epoch,AVG(AvgMeasure) FROM measures m
+                JOIN sensors s on m.SensorID = s.ID
+                WHERE s.Name = '%s' GROUP BY Epoch;
+                  """ % Name
+        else:
+            sql = """
+                SELECT Timestamp,AvgMeasure FROM measures m
+                JOIN sensors s on m.SensorID = s.ID
+                WHERE s.Name = '%s';
+                  """ % Name
 
         output = "["
         self.cur.execute(sql)

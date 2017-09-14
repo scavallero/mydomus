@@ -54,7 +54,7 @@ LOG_FILENAME = config["LogFileName"]
 SERVER_ADDR = config["ServerAddress"]
 SERVER_PORT = config["ServerPort"]
         
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Mydomus")
 logger.setLevel(LOG_LEVEL)
 handler_logfile = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=30)
 handler_stream = logging.StreamHandler()
@@ -79,13 +79,14 @@ def root(p,m):
 
 if __name__ == "__main__":
     logger.info("Mydomus service started")
-    db = dbutil.dbutil(config,logger)
+    db = dbutil.dbutil(config)
     db.InitDB()
-    t1 = threading.Thread(target=sensor.run,args=(logger,config))
+    t1 = threading.Thread(target=sensor.run,args=(config,))
     t1.start()
-    t2 = threading.Thread(target=scheduler.run,args=(logger,config))
+    t2 = threading.Thread(target=scheduler.run,args=(config,))
     t2.start()    
     httpapp.run(port=SERVER_PORT,log_handler=logger)
+    logger.info("*** EXIT ***")
 
 
 

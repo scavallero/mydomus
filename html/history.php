@@ -21,6 +21,7 @@ require_once('authenticate.php');
         <div data-role="page">
             <div id="panel-menu" data-role="panel" data-display="overlay">
                 <a href="index.php" class="ui-btn" data-ajax="false">Dashboard</a>
+				<a href="alerts.php" class="ui-btn" data-ajax="false">Alerts</a>
                 <a href="logout.php" class="ui-btn" data-ajax="false">Sign Out</a>
             </div>
             <div data-role="header" data-position="fixed">
@@ -28,8 +29,8 @@ require_once('authenticate.php');
                 <a href="#panel-menu" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext">Menu</a>
             </div>
             <div id="main" role="main" class="ui-content">
-                <div id="hdata">
-                </div>
+                <div id="hdata"/>
+                <a href="index.php" data-ajax="false" class="ui-btn">Back to dashboard</a>
             </div>
         </div>
         <script>
