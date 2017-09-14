@@ -56,7 +56,7 @@ def is_number(s):
     except ValueError:
         return False
     
-def UpdateSensorValue(Name,Value,logger):
+def UpdateSensorValue(Name,Value):
     global Devices
     global Sensors
     global Config
