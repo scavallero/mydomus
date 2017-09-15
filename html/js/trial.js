@@ -16,14 +16,25 @@ function doHistory(sensor,param) {
 				if (sensor == sensorname) {
 					$.post("gateway.php",{"url": "/get/history/"+sensorname},function(response){
 						var newVal = JSON.parse(response);
-						var data = newVal.value;
-						var style = graph_style;
+						var avg = newVal.avg;
+						var rng = newVal.rng;
+						var style = graph_history_style;
 						style.chart.backgroundColor = "#FFFFFF";
 						style.title.text = 'History Data';
 						style.series = [{
-							type: 'area',
-							name: 'History',
-							data: data
+							name: 'Average',
+							data: avg
+						},{
+							name: 'Range',
+							data: rng,
+							type: 'arearange',
+							lineWidth: 0,
+							linkedTo: ':previous',
+							fillOpacity: 0.3,
+							zIndex: 0,
+							marker: {
+								enabled: false
+							}
 						}];
 						var chart1 = Highcharts.chart('hdata',style);
 					});
@@ -61,7 +72,7 @@ function doDashboard() {
                 // Create dynamic gauge
                 $.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
                     var newVal = JSON.parse(response);
-                    style = temperature_style;
+                    style = gauge_style;
                     style.series = [{
                         name: 'Current Value',
                         data: [newVal.value],
@@ -220,7 +231,7 @@ function doTheme() {
 
 function doStyle() {
     
-	temperature_style = {
+	gauge_style = {
 
         chart: {
             type: 'gauge',
@@ -300,6 +311,37 @@ function doStyle() {
             }]
         }
     }
+	
+	graph_history_style = {
+        chart: {
+            zoomType: 'x'
+        },
+        title: {
+            text: 'Measure variation by day'
+        },
+
+        xAxis: {
+            type: 'datetime'
+        },
+
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+
+        tooltip: {
+            crosshairs: true,
+            shared: true,
+            valueSuffix: ' '
+        },
+
+        legend: {
+            enabled: false
+        }
+    }
+	
+	
 	
     graph_style = {
         chart: {

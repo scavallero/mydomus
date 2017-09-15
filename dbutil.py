@@ -176,32 +176,36 @@ class dbutil():
 
         if Group:
             sql = """
-                SELECT UNIX_TIMESTAMP(SUBSTRING_INDEX(FROM_UNIXTIME(Timestamp),' ',1)) AS Epoch,AVG(AvgMeasure) FROM measures m
+                SELECT UNIX_TIMESTAMP(SUBSTRING_INDEX(FROM_UNIXTIME(Timestamp),' ',1)) AS Epoch,
+                AVG(AvgMeasure),MIN(MinMeasure),MAX(MaxMeasure) FROM measures m
                 JOIN sensors s on m.SensorID = s.ID
                 WHERE s.Name = '%s' GROUP BY Epoch;
                   """ % Name
         else:
             sql = """
-                SELECT Timestamp,AvgMeasure FROM measures m
+                SELECT Timestamp,AvgMeasure,MinMeasure,MaxMeasure FROM measures m
                 JOIN sensors s on m.SensorID = s.ID
                 WHERE s.Name = '%s';
                   """ % Name
 
-        output = "["
-        logger.debug("SQL: %s" % sql);
+        avg = "["
+        rng = "["
+        #logger.debug("SQL: %s" % sql);
         self.cur.execute(sql)
         i = True
         for row in self.cur:
             if i:
                 i = False
-                output = output + "[%f,%f]" % (float(row[0])*1000.0,row[1])
+                avg = avg + "[%f,%f]" % (float(row[0])*1000.0,row[1])
+                rng = rng + "[%f,%f,%f]" % (float(row[0])*1000.0,row[2],row[3])
             else:
-                output = output + ",[%f,%f]" % (float(row[0])*1000.0,row[1])
-        output = output + "]"
+                avg = avg + ",[%f,%f]" % (float(row[0])*1000.0,row[1])
+                rng = rng + ",[%f,%f,%f]" % (float(row[0])*1000.0,row[2],row[3])
+        avg = avg + "]"
+        rng = rng + "]"
         
         self.close()
-        logger.debug("SQL RESULT: %s" % output);
-        return output
+        return avg,rng
     
     def ClearSensorDaily(self):
         self.open()

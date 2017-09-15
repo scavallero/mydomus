@@ -231,8 +231,8 @@ def run(config):
         fields = p.split('/')
         if len(fields) == 4: 
             if fields[3] in Sensors.keys():
-                data = db.GetSensorHistory(fields[3],True)
-                return '{"status":"ok","value":%s}' % data
+                avg,rng = db.GetSensorHistory(fields[3],True)
+                return '{"status":"ok","avg":%s,"rng":%s}' % (avg,rng)
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
