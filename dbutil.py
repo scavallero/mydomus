@@ -194,9 +194,9 @@ class dbutil():
         for row in self.cur:
             if i:
                 i = False
-                output = output + "[%f,%f]" % (row[0]*1000.0,row[1])
+                output = output + "[%f,%f]" % (float(row[0])*1000.0,row[1])
             else:
-                output = output + ",[%f,%f]" % (row[0]*1000.0,row[1])
+                output = output + ",[%f,%f]" % (float(row[0])*1000.0,row[1])
         output = output + "]"
         
         self.close()
