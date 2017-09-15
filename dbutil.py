@@ -188,6 +188,7 @@ class dbutil():
                   """ % Name
 
         output = "["
+        logger.debug("SQL: %s" % sql);
         self.cur.execute(sql)
         i = True
         for row in self.cur:
