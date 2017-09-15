@@ -98,7 +98,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Massimiliano Petra** - *Initial work* - 
+* **Salvatore Cavallero** - *Initial work* - 
 
 ## Contributor
 
