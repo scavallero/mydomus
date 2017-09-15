@@ -20,7 +20,7 @@ function doHistory(sensor,param) {
 						var rng = newVal.rng;
 						var style = graph_history_style;
 						style.chart.backgroundColor = "#FFFFFF";
-						style.title.text = 'History Data';
+						style.title.text = sensorname+' history data';
 						style.series = [{
 							name: 'Average',
 							data: avg
