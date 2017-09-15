@@ -34,52 +34,59 @@ configuration:
 
 ```
 {
-    "DomoticzURL": "http://192.168.1.104:8080/json.htm",
-    "DelayLoop": 150,
+
+    "LogFileName": "/var/log/mydomus/mydomus.log",
+    "ServerAddress": "127.0.0.1",
+    "ServerPort": 9001,
+    "RedirectOutput": "False",
+    "DbHost": "127.0.0.1",
+    "DbName": "mydomus",
+    "DbUser": "mydomus",
+    "DbPassword": "mydomus",
+    "SamplingPeriod": 30,
     "Sensors": {
-        "ArduinoTemperature": {
-            "Status": "Off",
-            "Type": "UsbTemperature",
-            "Device": "/dev/ttyUSB0",
-            "IDX": 1
-        },
-        "SolarPower": {
+        "RandomGroup": {
             "Status": "On",
-            "Type": "123Solar",
-            "URL": "http://192.168.1.112/123solar/programs",
-            "Mode": "Electricity",
-            "IDX": 7
-        },
-        "SolarPowerSM": {
-            "Status": "Off",
-            "Type": "123Solar",
-            "URL": "http://192.168.1.112/123solar/programs",
-            "Mode": "SmartMeter",
-            "IDX": 17
-        }, 
-        "WeatherStation": {
-            "Status": "On",
-            "Type": "oregonble",
-            "Device": "hci0",
-            "Name": "IDTW218H",
-            "device": {
-            	"Computer Room" : {
-            	    "Channel": 0,
-            	    "Mode": "THB",
-            	    "IDX": 22		    
-            	},
-            	"Living Room" : {
-            	    "Channel": 1,
-            	    "Mode": "TH",
-            	    "IDX": 23		    
-            	},
-            	"Attic" : {
-            	    "Channel": 2,
-            	    "Mode": "T",
-            	    "IDX": 24		    
-            	}         	
+            "Type": "random",
+            "Delay": 50,
+            "Devices" : {
+                "Random100" : {
+                    "RangeMin": 1,
+                    "RangeMax": 100
+                }
             }
-        }                  
+        },
+        "WunderGroup": {
+            "Status": "On",
+            "Type": "wunderground",
+            "Delay": 250,
+            "ApiKey": "0cedebb6dc0593c2",
+            "IDStation": "IPIEMONT26",
+            "Devices" : {
+                "ExternalTemperature" : {
+                    "Type": "temp_c"
+                },
+                "ExternalHumidity" : {
+                    "Type": "relative_humidity"
+                },
+                "Pressure" : {
+                    "Type": "pressure_mb"
+                },
+                "WindSpeed" : {
+                    "Type": "wind_kph"
+                },
+                "Precipitation" :  {
+                    "Type": "precip_1hr"
+                }
+            }
+        },
+        "CpuGroup": {
+            "Status": "On",
+            "Type": "cputemp",
+            "Devices" : {
+                "CpuTemperature" : 0
+            }
+        }
     }
 }
 ```

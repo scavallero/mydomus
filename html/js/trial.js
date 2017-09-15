@@ -12,7 +12,7 @@ function doHistory(sensor,param) {
         var jsonresp = JSON.parse(response);
         var groups = jsonresp['value'];
 		jQuery.each(groups, function(item, val) {
-			jQuery.each(val['device'], function(sensorname, val) {
+			jQuery.each(val['Devices'], function(sensorname, val) {
 				if (sensor == sensorname) {
 					$.post("gateway.php",{"url": "/get/history/"+sensorname},function(response){
 						var newVal = JSON.parse(response);
@@ -42,7 +42,7 @@ function doDashboard() {
         var jsonresp = JSON.parse(response);
         var groups = jsonresp['value'];
         jQuery.each(groups, function(item, val) {
-            jQuery.each(val['device'], function(sensorname, val) {
+            jQuery.each(val['Devices'], function(sensorname, val) {
                 var html='';
                 html += '<div data-role="collapsible">';
                 html +=   '<h4>'+sensorname+'</h4>';
