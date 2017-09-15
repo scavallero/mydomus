@@ -200,6 +200,7 @@ class dbutil():
         output = output + "]"
         
         self.close()
+        logger.debug("SQL RESULT: %s" % output);
         return output
     
     def ClearSensorDaily(self):
