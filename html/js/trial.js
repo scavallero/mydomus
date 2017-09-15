@@ -319,23 +319,23 @@ function doStyle() {
         title: {
             text: 'Measure variation by day'
         },
-
+        subtitle: {
+            text: document.ontouchstart === undefined ?
+                    'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        },
         xAxis: {
             type: 'datetime'
         },
-
         yAxis: {
             title: {
                 text: null
             }
         },
-
         tooltip: {
             crosshairs: true,
             shared: true,
             valueSuffix: ' '
         },
-
         legend: {
             enabled: false
         }
