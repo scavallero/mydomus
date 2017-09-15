@@ -176,7 +176,7 @@ class dbutil():
 
         if Group:
             sql = """
-                SELECT FLOOR(Timestamp/86400)*86400 AS Epoch,AVG(AvgMeasure) FROM measures m
+                SELECT UNIX_TIMESTAMP(SUBSTRING_INDEX(FROM_UNIXTIME(Timestamp),' ',1)) AS Epoch,AVG(AvgMeasure) FROM measures m
                 JOIN sensors s on m.SensorID = s.ID
                 WHERE s.Name = '%s' GROUP BY Epoch;
                   """ % Name
