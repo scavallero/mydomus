@@ -29,8 +29,12 @@ require_once('authenticate.php');
                 <a href="#panel-menu" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext">Menu</a>
             </div>
             <div id="main" role="main" class="ui-content">
-                <div id="hdata"/>
-                <a href="index.php" data-ajax="false" class="ui-btn">Back to dashboard</a>
+				<div>
+					<div id="hdata"/>
+				</div>
+				<div>
+					<a href="index.php" data-ajax="false" class="ui-btn">Back to dashboard</a>
+				</div>
             </div>
         </div>
         <script>
