@@ -209,10 +209,14 @@ def run(config):
         db = dbutil.dbutil(Config)
 
         fields = p.split('/')
+        ylabel = ""
         if len(fields) == 4: 
             if fields[3] in Sensors.keys():
                 data = db.GetSensorDaily(fields[3])
-                return '{"status":"ok","value":%s}' % data
+                if "YLabel" in Devices[fields[3]].keys():
+                    ylabel = Devices[fields[3]]['YLabel']
+                
+                return '{"status":"ok","value":%s,"ylabel":"%s"}' % (data,ylabel)
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
@@ -265,6 +269,7 @@ def run(config):
                 elif item == "config":
                     logger.error("Invalid sensor name 'config' reserved keyword")
                 Sensors[item] = []
+                Devices[item] = group['Devices'][item]
                 LastRead[item] = ("","")
                 db.AddSensosrName(item)
                 

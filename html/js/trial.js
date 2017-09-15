@@ -101,6 +101,8 @@ function doDashboard() {
                     var newVal = JSON.parse(response);
                     var data = newVal.value;      
                     var style = graph_style;
+					style.title.text = sensorname+' last 24 hours data';
+					style.yAxis.tile.text = newVal.ylabel;
                     style.series = [{
                         type: 'area',
                         name: 'Temp',
