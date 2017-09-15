@@ -82,9 +82,9 @@ def DoWunder(group):
         data = resp.json()
         #print json.dumps(data, sort_keys=True, indent=4)
 
-        for item in group['Peripherials']:
+        for item in group['device']:
 
-            sensor = group['Peripherials'][item]
+            sensor = group['device'][item]
             if sensor['Type'] == "temp_c":
                 value = str(data["current_observation"]["temp_c"])
                 print item,value
@@ -107,9 +107,9 @@ def DoWunder(group):
         
 def DoRandom(group):
 
-    for item in group['Peripherials']:
+    for item in group['device']:
 
-        sensor = group['Peripherials'][item]
+        sensor = group['device'][item]
 
         start_int = sensor['RangeMin']
         end_init = sensor['RangeMax']
@@ -118,9 +118,9 @@ def DoRandom(group):
 
 def DoCpuTempRead(group):
 
-    for item in group['Peripherials']:
+    for item in group['device']:
 
-        sensor = group['Peripherials'][item]
+        sensor = group['device'][item]
 
         bashCommand = "cat /sys/class/thermal/thermal_zone0/temp"
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
@@ -129,9 +129,9 @@ def DoCpuTempRead(group):
 
 def CheckExtCmd(group):
     result = True
-    for item in group['Peripherials']:
+    for item in group['device']:
 
-        sensor = group['Peripherials'][item]
+        sensor = group['device'][item]
 
         if "command" not in sensor.keys():
             result = False
@@ -151,9 +151,9 @@ def CheckExtCmd(group):
 
 def DoExtCmd(group):
 
-    for item in group['Peripherials']:
+    for item in group['device']:
 
-        sensor = group['Peripherials'][item]
+        sensor = group['device'][item]
         #bashCommand = os.path.join(".","plugins",sensor['command'])
         bashCommand = os.path.join(CWD,"plugins",sensor['command'])
         logger.debug("ExtCmd: "+bashCommand)
@@ -259,7 +259,7 @@ def run(config):
         group=Groups[key]
         if group['Status'] == 'On':
             Groups[key]['Timestamp'] = "NA"
-            for item in group['Peripherials']:
+            for item in group['device']:
                 if item in Sensors.keys():
                     logger.error("Sensor %s duplicated" % item)
                 elif item == "config":

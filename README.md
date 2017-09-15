@@ -62,7 +62,7 @@ configuration:
             "Type": "oregonble",
             "Device": "hci0",
             "Name": "IDTW218H",
-            "Peripherials": {
+            "device": {
             	"Computer Room" : {
             	    "Channel": 0,
             	    "Mode": "THB",
