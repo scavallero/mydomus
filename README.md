@@ -1,6 +1,7 @@
 # MyDomus
 
-MyDomus is a personal home automation service. 
+MyDomus is a personal home automation system. 
+
 Currently supported sensors are:
 
 * OregonScientific Bluetooth LE Weather Sensors
@@ -45,46 +46,63 @@ configuration:
     "DbPassword": "mydomus",
     "SamplingPeriod": 30,
     "Sensors": {
-        "RandomGroup": {
+        "Random": {
             "Status": "On",
             "Type": "random",
             "Delay": 50,
-            "Devices" : {
+            "Metrics" : {
                 "Random100" : {
+                    "Class": "random",
                     "RangeMin": 1,
-                    "RangeMax": 100
+                    "RangeMax": 100,
+                    "YLabel": "Value",
+                    "Unit": ""
                 }
             }
         },
-        "WunderGroup": {
+        "Meteo": {
             "Status": "On",
             "Type": "wunderground",
             "Delay": 250,
             "ApiKey": "0cedebb6dc0593c2",
             "IDStation": "IPIEMONT26",
-            "Devices" : {
+            "Metrics" : {
                 "ExternalTemperature" : {
-                    "Type": "temp_c"
+                    "Class": "temp_c",
+                    "YLabel" : "Temperature",
+                    "Unit": "C"
                 },
                 "ExternalHumidity" : {
-                    "Type": "relative_humidity"
+                    "Class": "relative_humidity",
+                    "YLabel": "Humidity",
+                    "Unit": "%"
                 },
                 "Pressure" : {
-                    "Type": "pressure_mb"
+                    "Class": "pressure_mb",
+                    "YLabel": "Pressure",
+                    "Unit": "mbar"
                 },
                 "WindSpeed" : {
-                    "Type": "wind_kph"
+                    "Class": "wind_kph",
+                    "YLabel": "Wind speed",
+                    "Unit": "km/h"
                 },
                 "Precipitation" :  {
-                    "Type": "precip_1hr"
+                    "Class": "precip_1hr",
+                    "YLabel": "Precipitation",
+                    "Unit": "mm/h"
                 }
             }
         },
-        "CpuGroup": {
+        "OrangeBoard": {
             "Status": "On",
             "Type": "cputemp",
-            "Devices" : {
-                "CpuTemperature" : 0
+            "Metrics" : {
+                "CpuTemperature" : {
+                    "Class": "temp_c",
+                    "YLabel" : "Temperature",
+                    "Unit": "C"
+                }
             }
         }
     }
