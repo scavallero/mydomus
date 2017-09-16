@@ -127,6 +127,21 @@ def DoCpuTempRead(group):
         output, error = process.communicate()
         UpdateSensorValue(item,output.strip())
 
+def DoAurora(group):
+
+    for item in group['Metrics']:
+
+        sensor = group['Metrics'][item]
+        value = "NA"
+
+        bashCommand = "aurora -a %d -Y6 -d0 %s " % (sensor['Address'],sensor['Port'])
+        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        for w in output.split('\n'):
+            if "Grid Power Reading" in w:
+                value = "%.1f" % float(w.split('=')[1].strip().split(' ')[0])
+        UpdateSensorValue(item,value)
+        
 def CheckExtCmd(group):
     result = True
     for item in group['Metrics']:
@@ -306,6 +321,8 @@ def run(config):
                             DoRandom(group)
                         elif group['Type'] == "cputemp":
                             DoCpuTempRead(group)
+                        elif group['Type'] == "aurora":
+                            DoAurora(group)
                         elif group['Type'] == "extcmd":
                             DoExtCmd(group)
                         elif group['Type'] == "wunderground":
@@ -319,6 +336,8 @@ def run(config):
                         DoRandom(group)
                     elif group['Type'] == "cputemp":
                         DoCpuTempRead(group)
+                    elif group['Type'] == "aurora":
+                        DoAurora(group)
                     elif group['Type'] == "extcmd":
                         DoExtCmd(group)
                     elif group['Type'] == "wunderground":
