@@ -196,10 +196,10 @@ class dbutil():
         for row in self.cur:
             if i:
                 i = False
-                avg = avg + "[%f,%f]" % (float(row[0])*1000.0,row[1])
+                avg = avg + "[%f,%.2f]" % (float(row[0])*1000.0,row[1])
                 rng = rng + "[%f,%f,%f]" % (float(row[0])*1000.0,row[2],row[3])
             else:
-                avg = avg + ",[%f,%f]" % (float(row[0])*1000.0,row[1])
+                avg = avg + ",[%f,%.2f]" % (float(row[0])*1000.0,row[1])
                 rng = rng + ",[%f,%f,%f]" % (float(row[0])*1000.0,row[2],row[3])
         avg = avg + "]"
         rng = rng + "]"

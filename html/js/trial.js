@@ -27,7 +27,10 @@ function doHistory(sensor,param) {
 						}
 						style.series = [{
 							name: 'Average',
-							data: avg
+							data: avg,
+							marker: {
+								enabled: false
+							}
 						},{
 							name: 'Range',
 							data: rng,
