@@ -64,7 +64,7 @@ configuration:
             "Status": "On",
             "Type": "wunderground",
             "Delay": 250,
-            "ApiKey": "0cedebb6dc0593c2",
+            "ApiKey": "xxxxxxxxxxxxxxxx",
             "IDStation": "IPIEMONT26",
             "Metrics" : {
                 "ExternalTemperature" : {
