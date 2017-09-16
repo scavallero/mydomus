@@ -62,11 +62,11 @@ def run(config):
         logger.info("Begin scheduler tasks")
         now = datetime.datetime.now()
         
-        for name in sensor.Sensors:
+        for name in sensor.Measures:
 
             # Begin critical thread safe operation
-            measure = sensor.Sensors[name]
-            sensor.Sensors[name] = []
+            measure = sensor.Measures[name]
+            sensor.Measures[name] = []
             # End critical thread safe operation
 
             # Compute average value

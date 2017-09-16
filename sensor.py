@@ -37,8 +37,8 @@ import os
 
 logger = logging.getLogger("Mydomus")
 
-Devices = {}
-Sensors = {}
+Metrics = {}
+Measures = {}
 LastRead = {}
 Config = {}
 
@@ -57,15 +57,15 @@ def is_number(s):
         return False
     
 def UpdateSensorValue(Name,Value):
-    global Devices
-    global Sensors
+    global Metrics
+    global Measures
     global Config
     global LastRead
 
     timestamp = time.time()
-    if Name in Sensors.keys():
+    if Name in Measures.keys():
         if is_number(Value):
-            Sensors[Name].append((Value,timestamp))
+            Measures[Name].append((Value,timestamp))
             LastRead[Name] = (Value,timestamp)
             logger.info('Sensor [%s] read [%s]' % (Name,Value))
         else:
@@ -82,22 +82,22 @@ def DoWunder(group):
         data = resp.json()
         #print json.dumps(data, sort_keys=True, indent=4)
 
-        for item in group['Devices']:
+        for item in group['Metrics']:
 
-            sensor = group['Devices'][item]
-            if sensor['Type'] == "temp_c":
+            sensor = group['Metrics'][item]
+            if sensor['Class'] == "temp_c":
                 value = str(data["current_observation"]["temp_c"])
                 print item,value
-            elif sensor['Type'] == "relative_humidity":
+            elif sensor['Class'] == "relative_humidity":
                 value = data["current_observation"]["relative_humidity"].split("%")[0]
                 print item,value
-            elif sensor['Type'] == "pressure_mb":
+            elif sensor['Class'] == "pressure_mb":
                 value = str(data["current_observation"]["pressure_mb"])
                 print item,value    
-            elif sensor['Type'] == "wind_kph":
+            elif sensor['Class'] == "wind_kph":
                 value = str(data["current_observation"]["wind_kph"])
                 print item,value
-            elif sensor['Type'] == "precip_1hr":
+            elif sensor['Class'] == "precip_1hr":
                 value = str(data["current_observation"]["precip_1hr_metric"])
                 print item,value
 
@@ -107,9 +107,9 @@ def DoWunder(group):
         
 def DoRandom(group):
 
-    for item in group['Devices']:
+    for item in group['Metrics']:
 
-        sensor = group['Devices'][item]
+        sensor = group['Metrics'][item]
 
         start_int = sensor['RangeMin']
         end_init = sensor['RangeMax']
@@ -118,9 +118,9 @@ def DoRandom(group):
 
 def DoCpuTempRead(group):
 
-    for item in group['Devices']:
+    for item in group['Metrics']:
 
-        sensor = group['Devices'][item]
+        sensor = group['Metrics'][item]
 
         bashCommand = "cat /sys/class/thermal/thermal_zone0/temp"
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
@@ -129,9 +129,9 @@ def DoCpuTempRead(group):
 
 def CheckExtCmd(group):
     result = True
-    for item in group['Devices']:
+    for item in group['Metrics']:
 
-        sensor = group['Devices'][item]
+        sensor = group['Metrics'][item]
 
         if "command" not in sensor.keys():
             result = False
@@ -151,9 +151,9 @@ def CheckExtCmd(group):
 
 def DoExtCmd(group):
 
-    for item in group['Devices']:
+    for item in group['Metrics']:
 
-        sensor = group['Devices'][item]
+        sensor = group['Metrics'][item]
         #bashCommand = os.path.join(".","plugins",sensor['command'])
         bashCommand = os.path.join(CWD,"plugins",sensor['command'])
         logger.debug("ExtCmd: "+bashCommand)
@@ -171,8 +171,8 @@ def DoExtCmd(group):
         
 def run(config):
 
-    global Devices
-    global Sensors
+    global Metrics
+    global Measures
     global Config
     global LastRead
 
@@ -184,15 +184,17 @@ def run(config):
     @httpapp.addurl('/get/sensor/')
     def getSensor(p,m):
         
-        global Devices
-        global Sensors
+        global Metrics
+        global Measures
         global LastRead
         
         fields = p.split('/')
         if len(fields) == 4: 
             if fields[3] in LastRead.keys():
                 value = LastRead[fields[3]][0]
-                return '{"status":"ok","value":%s}' % value
+                ylabel = Metrics[fields[3]]['YLabel']
+                unit = Metrics[fields[3]]['Unit']
+                return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s"}' % (value,ylabel,unit)
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
@@ -201,22 +203,21 @@ def run(config):
     @httpapp.addurl('/get/daily/')
     def getDaily(p,m):
         
-        global Devices
-        global Sensors
+        global Metrics
+        global Measures
         global Config
 
         output = ""
         db = dbutil.dbutil(Config)
 
         fields = p.split('/')
-        ylabel = ""
         if len(fields) == 4: 
-            if fields[3] in Sensors.keys():
+            if fields[3] in Measures.keys():
                 data = db.GetSensorDaily(fields[3])
-                if "YLabel" in Devices[fields[3]].keys():
-                    ylabel = Devices[fields[3]]['YLabel']
+                ylabel = Metrics[fields[3]]['YLabel']
+                unit = Metrics[fields[3]]['Unit']
                 
-                return '{"status":"ok","value":%s,"ylabel":"%s"}' % (data,ylabel)
+                return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s"}' % (data,ylabel,unit)
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
@@ -225,8 +226,8 @@ def run(config):
     @httpapp.addurl('/get/history/')
     def getHistory(p,m):
         
-        global Devices
-        global Sensors
+        global Metrics
+        global Measures
         global Config
 
         output = ""
@@ -234,9 +235,11 @@ def run(config):
 
         fields = p.split('/')
         if len(fields) == 4: 
-            if fields[3] in Sensors.keys():
+            if fields[3] in Measures.keys():
                 avg,rng = db.GetSensorHistory(fields[3],True)
-                return '{"status":"ok","avg":%s,"rng":%s}' % (avg,rng)
+                ylabel = Metrics[fields[3]]['YLabel']
+                unit = Metrics[fields[3]]['Unit']
+                return '{"status":"ok","avg":%s,"rng":%s,"ylabel":"%s","unit":"%s"}' % (avg,rng,ylabel,unit)
             else:
                 return '{"status":"error","value":"sensor not exist"}'  
         else:
@@ -245,48 +248,60 @@ def run(config):
     @httpapp.addurl('/get/sensor/config')
     def getSensorConfig(p,m):
         
-        global Devices
-        global Sensors
+        global Metrics
+        global Measures
 
-        return '{"status":"ok","value":%s}' % json.dumps(Groups, sort_keys=True)
+        return '{"status":"ok","value":%s}' % json.dumps(Sensors, sort_keys=True)
         
+    #######################################################
+    # Setup Metrics
+    #######################################################
     
-    # Setup devices sensors and groups
     if "Sensors" not in config.keys():
         logger.error("No sensors has been yet configured")
         return
     
-    Groups = config['Sensors']
+    Sensors = config['Sensors']
     
     logger.info("Begin sensors setup")
-    for key in Groups:
-        group=Groups[key]
+    for key in Sensors:
+        group=Sensors[key]
         if group['Status'] == 'On':
-            Groups[key]['Timestamp'] = "NA"
-            for item in group['Devices']:
-                if item in Sensors.keys():
+            Sensors[key]['Timestamp'] = "NA"
+            for item in group['Metrics']:
+                if item in Measures.keys():
                     logger.error("Sensor %s duplicated" % item)
                 elif item == "config":
                     logger.error("Invalid sensor name 'config' reserved keyword")
-                Sensors[item] = []
-                Devices[item] = group['Devices'][item]
+                Measures[item] = []
+                Metrics[item] = group['Metrics'][item]
+                Metrics[item]["SensorName"] = key
+
+                # Add YLabel and Unit if not exist
+                if "Unit" not in Metrics[item].keys():
+                    Metrics[item]["Unit"] = ""
+                if "YLabel" not in Metrics[item].keys():
+                    Metrics[item]["YLabel"] = ""
+                
                 LastRead[item] = ("","")
                 db.AddSensosrName(item)
                 
                 
     logger.info("End sensors setup")
 
+    ######################################################
     # Main sensor loop
+    ######################################################
     while(True):
         logger.info("Begin sensosrs polling")
         t = time.time()
-        for key in Groups:
-            group=Groups[key]
+        for key in Sensors:
+            group=Sensors[key]
             if group['Status'] == 'On':
-                if 'Delay' in Groups[key].keys() and Groups[key]['Timestamp'] != "NA":
-                    if t-Groups[key]['Timestamp'] > Groups[key]['Delay']:
+                if 'Delay' in Sensors[key].keys() and Sensors[key]['Timestamp'] != "NA":
+                    if t-Sensors[key]['Timestamp'] > Sensors[key]['Delay']:
                         # Delayed group
-                        Groups[key]['Timestamp'] = t
+                        Sensors[key]['Timestamp'] = t
                         if group['Type'] == "random":
                             DoRandom(group)
                         elif group['Type'] == "cputemp":
@@ -299,7 +314,7 @@ def run(config):
                             
                 else:
                     # Non delayed group
-                    Groups[key]['Timestamp'] = t
+                    Sensors[key]['Timestamp'] = t
                     if group['Type'] == "random":
                         DoRandom(group)
                     elif group['Type'] == "cputemp":

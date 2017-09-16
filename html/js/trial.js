@@ -12,7 +12,7 @@ function doHistory(sensor,param) {
         var jsonresp = JSON.parse(response);
         var groups = jsonresp['value'];
 		jQuery.each(groups, function(item, val) {
-			jQuery.each(val['Devices'], function(sensorname, val) {
+			jQuery.each(val['Metrics'], function(sensorname, val) {
 				if (sensor == sensorname) {
 					$.post("gateway.php",{"url": "/get/history/"+sensorname},function(response){
 						var newVal = JSON.parse(response);
@@ -21,6 +21,10 @@ function doHistory(sensor,param) {
 						var style = graph_history_style;
 						style.chart.backgroundColor = "#FFFFFF";
 						style.title.text = sensorname+' history data';
+						style.yAxis.title.text = newVal.ylabel;
+						if (newVal.unit != "") {
+							style.yAxis.title.text = newVal.ylabel+"  ["+newVal.unit+"]";
+						}
 						style.series = [{
 							name: 'Average',
 							data: avg
@@ -53,7 +57,7 @@ function doDashboard() {
         var jsonresp = JSON.parse(response);
         var groups = jsonresp['value'];
         jQuery.each(groups, function(item, val) {
-            jQuery.each(val['Devices'], function(sensorname, val) {
+            jQuery.each(val['Metrics'], function(sensorname, val) {
                 var html='';
                 html += '<div data-role="collapsible">';
                 html +=   '<h4>'+sensorname+'</h4>';
@@ -73,11 +77,17 @@ function doDashboard() {
                 $.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
                     var newVal = JSON.parse(response);
                     style = gauge_style;
+					style.title.text = newVal.ylabel
+					if (newVal.unit != "") {
+						style.yAxis.title.text = newVal.unit;
+					} else {
+						style.yAxis.title.text = "";
+					}
                     style.series = [{
                         name: 'Current Value',
                         data: [newVal.value],
                         tooltip: {
-                            valueSuffix: 'C'
+                            valueSuffix: "  "+newVal.unit
                         }
                     }];
                     
@@ -103,6 +113,9 @@ function doDashboard() {
                     var style = graph_style;
 					style.title.text = sensorname+' last 24 hours data';
 					style.yAxis.title.text = newVal.ylabel;
+					if (newVal.unit != "") {
+						style.yAxis.title.text = newVal.ylabel+"  ["+newVal.unit+"]";
+					}
                     style.series = [{
                         type: 'area',
                         name: 'Temp',
@@ -241,7 +254,9 @@ function doStyle() {
             plotBorderWidth: 0,
             plotShadow: false
         },
-
+        title: {
+            text: 'Chart title'
+        },
         pane: {
             startAngle: -150,
             endAngle: 150,
