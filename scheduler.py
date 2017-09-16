@@ -79,6 +79,11 @@ def run(config):
                 value = value / float(len(measure))
                 timestamp = timestamp  / float(len(measure))
                 db.AddSensorValue(name,value,timestamp)
+            else:
+                # If no valid measure zero insert
+                timestamp = time.time()
+                value= 0.0
+                db.AddSensorValue(name,value,timestamp)                
 
         if now.hour % 6 == 0:
             doActivity(now.hour/6,config)
