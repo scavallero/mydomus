@@ -83,7 +83,9 @@ def run(config):
                 # If no valid measure zero insert
                 timestamp = time.time()
                 value= 0.0
-                db.AddSensorValue(name,value,timestamp)                
+                if "ZeroFill" in sensor.Metrics[name].keys():
+                    if sensor.Metrics[name]["ZeroFill"] == "True":
+                        db.AddSensorValue(name,value,timestamp)                
 
         if now.hour % 6 == 0:
             doActivity(now.hour/6,config)
