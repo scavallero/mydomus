@@ -1,0 +1,27 @@
+
+body {
+  padding-top: 80px;
+  background:#333;
+}
+
+p,h2 {
+  color: white;
+}
+
+.navbar {
+  background:#337AB7;  
+}
+
+.navbar .navbar-nav > li > a {
+    color: #FFF;
+}
+
+.navbar .navbar-brand,
+.navbar .navbar-brand:hover,
+.navbar .navbar-brand:focus {
+    color: #FFF;
+}
+
+.container {
+max-width: 400px;
+}

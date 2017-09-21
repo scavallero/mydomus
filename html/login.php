@@ -27,57 +27,79 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
 ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>MyDomus Login</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="css/mydomus.css" />
-		<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
-		<link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" />
-		<script src="js/jquery-1.11.1.min.js"></script>
-		<script src="js/jquery.mobile-1.4.5.min.js"></script>
-        <!--
-		<script src="js/highcharts.js"></script>
-		<script src="js/highcharts-more.js"></script>
-		<script src="js/main.js"></script>
-        <script src="js/trial.js"></script>
-        -->
-    </head>
-    <body> 
-	
-	<div data-role="page">
-		<center>
-            <div id="main" role="main" class="ui-content" style="width:300px">
-               
-			   	<div class="ui-body">
-					<h2>Please sign in </h2>
-				</div>
+<html>
+<head>
+    <title>WebApp</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-				<ul data-role="listview" data-inset="true">
-                    <li>
-						<!-- <form class="form-signin" action="login.php" method="POST"> -->
-                        <form class="form-signin" action="login.php" method="POST" data-ajax="false">
-							<div class="ui-body ui-corner-all">
-								<label for="inputEmail">Email address</label>
-								<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="email">
-								<label for="inputPassword">Password</label>
-								<input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" value="remember-me" name="remember"> <p>Remember me</p>
-									</label>
-								</div>
-							</div>
-						<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-						</form>
-                    </li>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/main.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script> 
+    <script src="js/main.js"></script>
+</head>
+
+<body>    
+    <!-- Navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div  class="navbar-brand">
+                    Project name
+                </div>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                <li class="acrive">
+                    <a href="index.php"><span class="fa fa-home solo">Home</span></a>
+                </li>
+                <li>
+                    <a href="#anch1"><span class="fa fa-anchor solo">Alerts</span></a>
+                </li>
+                <li>
+                    <a href="logout.php"><span class="fa fa-anchor solo">Sign Out</span></a>
+                </li>
                 </ul>
-			</div>
-		</center>
-    </div>
-    
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+
+        <form class="form-signin" action="login.php" method="POST">
+            <h2 class="form-signin-heading">Please sign in </h2>
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="email">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+            <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me" name="remember"> <p>Remember me</p>
+            </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+    </div> <!-- /container -->
 </body>
-
 </html>
-
 <?php } ?>
