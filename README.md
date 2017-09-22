@@ -28,6 +28,13 @@ To install mydomus service follow these steps:
 * sudo ln -s /usr/local/mydomus/html mydomus
 * sudo chown -R www-data mydomus
 
+## Updating to new version
+
+To update to new version digit following command in the git cloned directory:
+
+* git pull
+* sudo ./update.sh 
+
 ## Configuration
 
 MyDomus is configured via the mydomus.conf JSON file present in the directory /etc/mydomus. Here you can see an example of 
