@@ -31,7 +31,7 @@ require_once('authenticate.php');
     <script src="js/modules/exporting.js"></script>
 </head>
 <body>
-   <!-- Navbar -->
+    <!-- Navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
@@ -41,21 +41,15 @@ require_once('authenticate.php');
         			<span class="icon-bar"></span>
         			<span class="icon-bar"></span>
     			</button>
-                <div  class="navbar-brand">
-    				Project name
-                </div>
+                <div  class="navbar-brand">MyDomus</div>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-                <li class="acrive">
-                    <a href="index.php"><span class="fa fa-home solo">Home</span></a>
-                </li>
-                <li>
-                    <a href="#anch1"><span class="fa fa-anchor solo">Alerts</span></a>
-                </li>
-                <li>
-                    <a href="logout.php"><span class="fa fa-anchor solo">Sign Out</span></a>
-                </li>
+					<li class="acrive"><a href="index.php"><span class="fa fa-home solo">Home</span></a></li>
+					<li><a href="#anch1"><span class="fa fa-anchor solo">Alerts</span></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Sign Out</span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -70,7 +64,7 @@ require_once('authenticate.php');
 				</div>
                 <br>
 				<div>
-					<a href="index.php" class="btn btn-primary btn-block">Back to dashboard</a>
+					<a href="index.php" class="btn btn-primary btn-block">Back to home</a>
 				</div>
             </div>
         </div>

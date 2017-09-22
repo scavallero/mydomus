@@ -56,33 +56,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>    
     <!-- Navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <div  class="navbar-brand">
-                    Project name
-                </div>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                <li class="acrive">
-                    <a href="index.php"><span class="fa fa-home solo">Home</span></a>
-                </li>
-                <li>
-                    <a href="#anch1"><span class="fa fa-anchor solo">Alerts</span></a>
-                </li>
-                <li>
-                    <a href="logout.php"><span class="fa fa-anchor solo">Sign Out</span></a>
-                </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+		<div class="container-fluid">
+			<div class="navbar-header">
+    			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        			<span class="sr-only">Toggle navigation</span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+    			</button>
+                <div  class="navbar-brand">MyDomus</div>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="acrive"><a href="index.php"><span class="fa fa-home solo">Home</span></a></li>
+					<li><a href="#anch1"><span class="fa fa-anchor solo">Alerts</span></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Sign Out</span></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	
     <div class="container">
 
         <form class="form-signin" action="login.php" method="POST">

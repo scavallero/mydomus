@@ -50,6 +50,79 @@ function doHistory(sensor,param) {
 	});
 }
 
+function CreateDynamicGauge(sensorname,val) {
+	
+	$.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
+		var newVal = JSON.parse(response);
+		style = gauge_style;
+		style.title.text = newVal.ylabel
+		
+		if (newVal.unit != "") {
+			style.yAxis.title.text = newVal.unit;
+		} else {
+			style.yAxis.title.text = "";
+		}
+		style.series = [{
+			name: 'Current Value',
+			data: [newVal.value],
+			tooltip: {
+				valueSuffix: "  "+newVal.unit
+			}
+		}];
+		
+		var chart1 = Highcharts.chart('gauge_'+sensorname,style,function (chart) {
+			if (!chart.renderer.forExport) {
+				setInterval(function () {
+					if(chart.series) { // Prevent calls on false redraw
+						var point = chart.series[0].points[0];
+						$.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
+						var newVal = JSON.parse(response);
+						point.update(newVal.value); 
+						});
+					}
+				}, 30000);
+			}
+		});
+	});          
+}
+
+function CreateDynamicGraph(sensorname,val) {
+	$.post("gateway.php",{"url": "/get/daily/"+sensorname},function(response){
+	var newVal = JSON.parse(response);
+	var data = newVal.value;      
+	var style = graph_style;
+	style.title.text = sensorname+' last 24 hours data';
+
+	style.yAxis.title.text = newVal.ylabel;
+	if (newVal.unit != "") {
+		style.yAxis.title.text = newVal.ylabel+"  ["+newVal.unit+"]";
+	}
+	style.series = [{
+		type: 'area',
+		name: 'Temp',
+		data: data
+	}];
+
+	var graph1 = Highcharts.chart('graph_'+sensorname,style,function (chart) {
+		if (!chart.renderer.forExport) {
+			setInterval(function () {
+				if(chart.series) { // Prevent calls on false redraw
+					$.post("gateway.php",{"url": "/get/daily/"+sensorname},function(response){
+						var newVal = JSON.parse(response);
+						var data = newVal.value; 
+						chart.series[0].update({
+							type: 'area',
+							name: 'Temp',
+							data: data
+						}, true); //true / false to redraw
+					});
+				}
+			}, 120000);
+		}
+	});
+	});
+}
+
 function doDashboard() {
 
     doTheme();
@@ -70,10 +143,9 @@ function doDashboard() {
                 html += '        <div id="_'+sensorname+'" class="panel-collapse collapse">'
                 html += '            <div class="panel-body">'
                 html += '                <div class="row">'
-                html += '                    <div class="col-md-6 col-xs-12">'
+                html += '                    <div class="col-md-3 col-xs-12">'
                 html += '                        <div class="panel panel-success">'
                 html += '                            <div class="panel-heading">'
-                html += '                                Gauge'
                 html += '                            </div>'
                 html += '                            <div class="panel-body">'
                 html += '                                <div id="gauge_'+sensorname+'">';
@@ -81,13 +153,12 @@ function doDashboard() {
                 html += '                            </div>'
                 html += '                         </div>'
                 html += '                    </div>'
-                html += '                    <div class="col-md-6 col-xs-12">'
+                html += '                    <div class="col-md-9 col-xs-12">'
                 html += '                        <div class="panel panel-success">'
                 html += '                            <div class="panel-heading">'
-                html += '                                Graph'
                 html += '                            </div>'
-                html += '                            <div class="panel-body">'
-                html += '                                <div id="graph_'+sensorname+'"/>';
+				html += '                            <div class="panel-body">'
+				html += '                                <div id="graph_'+sensorname+'"/>';
                 html += '                            </div>'
                 html += '                         </div>'
                 html += '                     </div>'
@@ -100,85 +171,22 @@ function doDashboard() {
         });
         html +='</div>';
         $("#sensorlist").html(html);
+		
+		// Redraw graph on callapse shown and hide
+		$(".collapse").on('shown.bs.collapse hidden.bs.collapse', function() {
+			Highcharts.charts.forEach(function(chart) {
+				chart.reflow();
+			});
+		});
+  
         jQuery.each(groups, function(item, val) {   
             jQuery.each(val['Metrics'], function(sensorname, val) {            
                 
                 // Create dynamic gauge
-                $.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
-                    var newVal = JSON.parse(response);
-                    style = gauge_style;
-					style.title.text = newVal.ylabel
-                    
-                    //if ($( window ).width() < 400)
-                    //    style.chart.width =  $( window ).width()*.7;
-                    //console.log($( window ).width());
-                    
-					if (newVal.unit != "") {
-						style.yAxis.title.text = newVal.unit;
-					} else {
-						style.yAxis.title.text = "";
-					}
-                    style.series = [{
-                        name: 'Current Value',
-                        data: [newVal.value],
-                        tooltip: {
-                            valueSuffix: "  "+newVal.unit
-                        }
-                    }];
-                    
-                    var chart1 = Highcharts.chart('gauge_'+sensorname,style,function (chart) {
-                        if (!chart.renderer.forExport) {
-                            setInterval(function () {
-                                if(chart.series) { // Prevent calls on false redraw
-                                    var point = chart.series[0].points[0];
-                                    $.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
-                                    var newVal = JSON.parse(response);
-                                    point.update(newVal.value); 
-                                    });
-                                }
-                            }, 30000);
-                        }
-                    });
-                });                
-                
+				CreateDynamicGauge(sensorname,val);
+				
                 // Create dynamic graph
-                $.post("gateway.php",{"url": "/get/daily/"+sensorname},function(response){
-                    var newVal = JSON.parse(response);
-                    var data = newVal.value;      
-                    var style = graph_style;
-					style.title.text = sensorname+' last 24 hours data';
-
-                    //if ($( window ).width() < 400)
-                    //    style.chart.width =  $( window ).width()*.7;
-                    
-					style.yAxis.title.text = newVal.ylabel;
-					if (newVal.unit != "") {
-						style.yAxis.title.text = newVal.ylabel+"  ["+newVal.unit+"]";
-					}
-                    style.series = [{
-                        type: 'area',
-                        name: 'Temp',
-                        data: data
-                    }];
-                    
-                    var graph1 = Highcharts.chart('graph_'+sensorname,style,function (chart) {
-                        if (!chart.renderer.forExport) {
-                            setInterval(function () {
-                                if(chart.series) { // Prevent calls on false redraw
-                                    $.post("gateway.php",{"url": "/get/daily/"+sensorname},function(response){
-                                        var newVal = JSON.parse(response);
-                                        var data = newVal.value; 
-                                        chart.series[0].update({
-                                            type: 'area',
-                                            name: 'Temp',
-                                            data: data
-                                        }, true); //true / false to redraw
-                                    });
-                                }
-                            }, 120000);
-                        }
-                    });
-                });
+                CreateDynamicGraph(sensorname,val);
                 
                 console.log(sensorname);
             });
