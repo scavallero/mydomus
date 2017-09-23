@@ -294,6 +294,80 @@ y_0_100 = {
 	}]
 }
 
+y_power = {
+	min: 0,
+	max: 3000,
+
+	minorTickInterval: 'auto',
+	minorTickWidth: 1,
+	minorTickLength: 10,
+	minorTickPosition: 'inside',
+	minorTickColor: '#666',
+
+	tickPixelInterval: 30,
+	tickWidth: 2,
+	tickPosition: 'inside',
+	tickLength: 10,
+	tickColor: '#666',
+	labels: {
+		step: 2,
+		rotation: 'auto'
+	},
+	title: {
+		text: ''
+	},
+	plotBands: [{
+		from: 0,
+		to: 500,
+		color: '#DF5353' // red
+	}, {
+		from:500,
+		to: 1000,
+		color: '#DDDF0D' // yellow
+	}, {
+		from: 1000,
+		to: 3000,
+		color: '#55BF3B' // green
+	}]
+}
+
+y_barometer = {
+	min: 970,
+	max: 1050,
+
+	minorTickInterval: 'auto',
+	minorTickWidth: 1,
+	minorTickLength: 10,
+	minorTickPosition: 'inside',
+	minorTickColor: '#666',
+
+	tickPixelInterval: 30,
+	tickWidth: 2,
+	tickPosition: 'inside',
+	tickLength: 10,
+	tickColor: '#666',
+	labels: {
+		step: 2,
+		rotation: 'auto'
+	},
+	title: {
+		text: ''
+	},
+	plotBands: [{
+		from: 970,
+		to: 1005,
+		color: '#5555FF' // blue
+	},{
+		from:1005,
+		to: 1015,
+		color: '#55BF3B' // green
+	}, {
+		from: 1015,
+		to: 1050,
+		color: '#DF5353' // red
+	}]
+}
+
 /* Temperature Gauge Y-Style*/
 
 y_temperature = {
@@ -321,7 +395,7 @@ y_temperature = {
 	plotBands: [{
 		from: -10,
 		to: 0,
-		color: '#553BBF' // blue
+		color: '#5555FF' // blue
 	}, {
 		from: 0,
 		to: 20,

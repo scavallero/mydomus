@@ -31,6 +31,14 @@ function CreateDynamicGauge(sensorname,val) {
 				style.yAxis= y_0_100;
 			break;
 			
+			case 'pressure_mb':
+				style.yAxis= y_barometer;
+			break;
+			
+			case 'power':
+				style.yAxis= y_power;
+			break;
+			
 			default:
 			style.yAxis= y_default;
 		}
