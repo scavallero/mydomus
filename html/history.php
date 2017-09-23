@@ -25,10 +25,12 @@ require_once('authenticate.php');
 
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script> 
-    <script src="js/main.js"></script>
     <script src="js/highcharts.js"></script>
 	<script src="js/highcharts-more.js"></script>
     <script src="js/modules/exporting.js"></script>
+	<script src="js/chart-style.js"></script>
+	<script src="js/main.js"></script>
+	
 </head>
 <body>
     <!-- Navbar -->
