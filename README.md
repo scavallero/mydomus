@@ -42,11 +42,10 @@ configuration:
 
 ```
 {
-
     "LogFileName": "/var/log/mydomus/mydomus.log",
     "ServerAddress": "127.0.0.1",
     "ServerPort": 9001,
-    "RedirectOutput": "False",
+    "RedirectOutput": false,
     "DbHost": "127.0.0.1",
     "DbName": "mydomus",
     "DbUser": "mydomus",
@@ -71,7 +70,7 @@ configuration:
             "Status": "On",
             "Type": "wunderground",
             "Delay": 250,
-            "ApiKey": "xxxxxxxxxxxxxxxx",
+            "ApiKey": "xxxxxxxxxxxxxxxxxxxx",
             "IDStation": "IPIEMONT26",
             "Metrics" : {
                 "ExternalTemperature" : {
@@ -109,6 +108,22 @@ configuration:
                     "Class": "temp_c",
                     "YLabel" : "Temperature",
                     "Unit": "C"
+                }
+            }
+        },
+        "Aurora": {
+            "Status": "On",
+            "Type": "aurora",
+            "Metrics" : {
+                "SolarPower" : {
+                    "Class": "power",
+                    "Port": "/dev/ttyUSB0",
+                    "Address": 2,
+                    "YLabel" : "Power",
+                    "Unit": "W",
+                    "RangeMin": 0,
+                    "RangeMax": 3000,
+                    "ZeroFill": true
                 }
             }
         }
