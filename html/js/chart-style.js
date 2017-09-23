@@ -216,6 +216,127 @@ linear_gauge_style = {
 	}
 }
 
+/* Default Gauge Y-Style*/
+
+y_default = {
+	min: 0,
+	max: 120,
+
+	minorTickInterval: 'auto',
+	minorTickWidth: 1,
+	minorTickLength: 10,
+	minorTickPosition: 'inside',
+	minorTickColor: '#666',
+
+	tickPixelInterval: 30,
+	tickWidth: 2,
+	tickPosition: 'inside',
+	tickLength: 10,
+	tickColor: '#666',
+	labels: {
+		step: 2,
+		rotation: 'auto'
+	},
+	title: {
+		text: 'C'
+	},
+	plotBands: [{
+		from: 0,
+		to: 60,
+		color: '#55BF3B' // green
+	}, {
+		from:60,
+		to: 80,
+		color: '#DDDF0D' // yellow
+	}, {
+		from: 80,
+		to: 120,
+		color: '#DF5353' // red
+	}]
+}
+
+/* 0-100 Gauge Y-Style*/
+
+y_0_100 = {
+	min: 0,
+	max: 100,
+
+	minorTickInterval: 'auto',
+	minorTickWidth: 1,
+	minorTickLength: 10,
+	minorTickPosition: 'inside',
+	minorTickColor: '#666',
+
+	tickPixelInterval: 30,
+	tickWidth: 2,
+	tickPosition: 'inside',
+	tickLength: 10,
+	tickColor: '#666',
+	labels: {
+		step: 2,
+		rotation: 'auto'
+	},
+	title: {
+		text: ''
+	},
+	plotBands: [{
+		from: 0,
+		to: 60,
+		color: '#55BF3B' // green
+	}, {
+		from:60,
+		to: 80,
+		color: '#DDDF0D' // yellow
+	}, {
+		from: 80,
+		to: 100,
+		color: '#DF5353' // red
+	}]
+}
+
+/* Temperature Gauge Y-Style*/
+
+y_temperature = {
+	min: -10,
+	max: 50,
+
+	minorTickInterval: 'auto',
+	minorTickWidth: 1,
+	minorTickLength: 10,
+	minorTickPosition: 'inside',
+	minorTickColor: '#666',
+
+	tickPixelInterval: 30,
+	tickWidth: 2,
+	tickPosition: 'inside',
+	tickLength: 10,
+	tickColor: '#666',
+	labels: {
+		step: 2,
+		rotation: 'auto'
+	},
+	title: {
+		text: ''
+	},
+	plotBands: [{
+		from: -10,
+		to: 0,
+		color: '#553BBF' // blue
+	}, {
+		from: 0,
+		to: 20,
+		color: '#55BF3B' // green
+	}, {
+		from:20,
+		to: 30,
+		color: '#DDDF0D' // yellow
+	}, {
+		from: 30,
+		to: 50,
+		color: '#DF5353' // red
+	}]
+}
+
 gauge_style = {
 
 	chart: {
@@ -262,42 +383,7 @@ gauge_style = {
 	},
 
 	// the value axis
-	yAxis: {
-		min: 0,
-		max: 120,
-
-		minorTickInterval: 'auto',
-		minorTickWidth: 1,
-		minorTickLength: 10,
-		minorTickPosition: 'inside',
-		minorTickColor: '#666',
-
-		tickPixelInterval: 30,
-		tickWidth: 2,
-		tickPosition: 'inside',
-		tickLength: 10,
-		tickColor: '#666',
-		labels: {
-			step: 2,
-			rotation: 'auto'
-		},
-		title: {
-			text: 'C'
-		},
-		plotBands: [{
-			from: 0,
-			to: 60,
-			color: '#55BF3B' // green
-		}, {
-			from:60,
-			to: 80,
-			color: '#DDDF0D' // yellow
-		}, {
-			from: 80,
-			to: 120,
-			color: '#DF5353' // red
-		}]
-	}
+	yAxis: y_default
 }
 
 graph_history_style = {

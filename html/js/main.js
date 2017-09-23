@@ -1,5 +1,7 @@
 function CreateDynamicGauge(sensorname,val) {
 	
+	//console.log(val);
+	
 	$.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
 		var newVal = JSON.parse(response);
 		style = gauge_style;
@@ -18,6 +20,20 @@ function CreateDynamicGauge(sensorname,val) {
 				valueSuffix: "  "+newVal.unit
 			}
 		}];
+		
+		switch (val.Class) {
+			case 'temp_c':
+				style.yAxis= y_temperature;
+			break;
+
+			case 'cpu_temp_c':
+			case 'relative_humidity':
+				style.yAxis= y_0_100;
+			break;
+			
+			default:
+			style.yAxis= y_default;
+		}
 		
 		var chart1 = Highcharts.chart('gauge_'+sensorname,style,function (chart) {
 			if (!chart.renderer.forExport) {
@@ -42,7 +58,7 @@ function CreateDynamicGraph(sensorname,val) {
 	var data = newVal.value;      
 	var style = graph_style;
 	style.title.text = sensorname+' last 24 hours data';
-
+	
 	style.yAxis.title.text = newVal.ylabel;
 	if (newVal.unit != "") {
 		style.yAxis.title.text = newVal.ylabel+"  ["+newVal.unit+"]";
