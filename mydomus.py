@@ -65,7 +65,7 @@ logger.addHandler(handler_logfile)
 logger.addHandler(handler_stream)
 
 if "RedirectOutput" in config.keys():
-    if config["RedirectOutput"] == "True":
+    if config["RedirectOutput"]:
         sys.stderr = open('/var/log/mydomus/stderr.log', 'w')
         sys.stdouy = open('/var/log/mydomus/stdout.log', 'w')
         

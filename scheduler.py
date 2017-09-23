@@ -84,7 +84,7 @@ def run(config):
                 timestamp = time.time()
                 value= 0.0
                 if "ZeroFill" in sensor.Metrics[name].keys():
-                    if sensor.Metrics[name]["ZeroFill"] == "True":
+                    if sensor.Metrics[name]["ZeroFill"]:
                         db.AddSensorValue(name,value,timestamp)                
 
         if now.hour % 6 == 0:

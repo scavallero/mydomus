@@ -66,7 +66,7 @@ Highcharts.theme = {
    title: {
 	  style: {
 		 color: 'black',
-		 fontSize: '16px',
+		 fontSize: '18px',
 		 fontWeight: 'bold'
 	  }
    },
@@ -107,6 +107,13 @@ Highcharts.theme = {
 	  },
 	  map: {
 		 shadow: false
+	  },
+	  gauge: {
+		  dataLabels: {
+			  style: {
+				  "fontSize": "16px"
+			  }
+		  }
 	  }
    },
 
