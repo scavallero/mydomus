@@ -6,13 +6,8 @@ function CreateDynamicGauge(sensorname,val) {
 		var newVal = JSON.parse(response);
 		style = gauge_style;
 		//style = linear_gauge_style;
-		style.title.text = newVal.ylabel
-		
-		if (newVal.unit != "") {
-			style.yAxis.title.text = newVal.unit;
-		} else {
-			style.yAxis.title.text = "";
-		}
+		style.title.text = newVal.ylabel;
+
 		style.series = [{
 			name: 'Current Value',
 			data: [newVal.value],
@@ -41,6 +36,12 @@ function CreateDynamicGauge(sensorname,val) {
 			
 			default:
 			style.yAxis= y_default;
+		}
+		
+		if (newVal.unit != "") {
+			style.yAxis.title.text = newVal.unit;
+		} else {
+			style.yAxis.title.text = "";
 		}
 		
 		var chart1 = Highcharts.chart('gauge_'+sensorname,style,function (chart) {

@@ -421,7 +421,7 @@ gauge_style = {
 	},
 	exporting:{enabled:false},
 	title: {
-		text: 'Chart title'
+		text: ''
 	},
 	pane: {
 		startAngle: -150,
