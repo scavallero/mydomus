@@ -238,7 +238,7 @@ y_default = {
 		rotation: 'auto'
 	},
 	title: {
-		text: 'C'
+		text: ''
 	},
 	plotBands: [{
 		from: 0,
