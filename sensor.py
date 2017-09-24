@@ -249,9 +249,12 @@ def run(config):
         db = dbutil.dbutil(Config)
 
         fields = p.split('/')
-        if len(fields) == 4: 
+        if len(fields) == 5: 
             if fields[3] in Measures.keys():
-                avg,rng = db.GetSensorHistory(fields[3],True)
+                if fields[4] == 'null':
+                    avg,rng = db.GetSensorHistory(fields[3],True)
+                else:
+                    avg,rng = db.GetSensorLastdays(fields[3],True,days=int(fields[4]))
                 ylabel = Metrics[fields[3]]['YLabel']
                 unit = Metrics[fields[3]]['Unit']
                 return '{"status":"ok","avg":%s,"rng":%s,"ylabel":"%s","unit":"%s"}' % (avg,rng,ylabel,unit)

@@ -109,13 +109,17 @@ function doHistory(sensor,param) {
 		jQuery.each(groups, function(item, val) {
 			jQuery.each(val['Metrics'], function(sensorname, val) {
 				if (sensor == sensorname) {
-					$.post("gateway.php",{"url": "/get/history/"+sensorname},function(response){
+					$.post("gateway.php",{"url": "/get/history/"+sensorname+"/"+param},function(response){
 						var newVal = JSON.parse(response);
 						var avg = newVal.avg;
 						var rng = newVal.rng;
 						var style = graph_history_style;
 						style.chart.backgroundColor = "#FFFFFF";
-						style.title.text = sensorname+' history data';
+						if (param == 30) {
+							style.title.text = sensorname+' last 30 days data';
+						} else {
+							style.title.text = sensorname+' history data';
+						}
 						style.yAxis.title.text = newVal.ylabel;
 						if (newVal.unit != "") {
 							style.yAxis.title.text = newVal.ylabel+"  ["+newVal.unit+"]";
@@ -184,6 +188,7 @@ function doDashboard() {
                 html += '                         </div>'
                 html += '                     </div>'
                 html += '                </div>'
+				html += '                <br><a class="btn btn-primary btn-block" href="history.php?sensor='+sensorname+'&param=30'+'">View last 30 days</a>';
                 html += '                <br><a class="btn btn-primary btn-block" href="history.php?sensor='+sensorname+'&param=null'+'">View history</a>';                
                 html += '            </div>'
                 html += '        </div>'

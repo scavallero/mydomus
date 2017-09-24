@@ -170,6 +170,45 @@ class dbutil():
         self.close()
         return output
 
+    def GetSensorLastdays(self,Name,Group=False,days=30):
+        self.open()
+        self.use()
+
+        yesterday = time.time()-(days*24*3600)
+        
+        if Group:
+            sql = """
+                SELECT UNIX_TIMESTAMP(SUBSTRING_INDEX(FROM_UNIXTIME(Timestamp),' ',1)) AS Epoch,
+                AVG(AvgMeasure),MIN(MinMeasure),MAX(MaxMeasure) FROM measures m
+                JOIN sensors s on m.SensorID = s.ID
+                WHERE s.Name = '%s' AND m.Timestamp > %f GROUP BY Epoch;
+                  """ % (Name,yesterday)
+        else:
+            sql = """
+                SELECT Timestamp,AvgMeasure,MinMeasure,MaxMeasure FROM measures m
+                JOIN sensors s on m.SensorID = s.ID
+                WHERE s.Name = '%s' AND m.Timestamp > %f;
+                  """ % (Name,yesterday)
+
+        avg = "["
+        rng = "["
+        #logger.debug("SQL: %s" % sql);
+        self.cur.execute(sql)
+        i = True
+        for row in self.cur:
+            if i:
+                i = False
+                avg = avg + "[%f,%.2f]" % (float(row[0])*1000.0,row[1])
+                rng = rng + "[%f,%f,%f]" % (float(row[0])*1000.0,row[2],row[3])
+            else:
+                avg = avg + ",[%f,%.2f]" % (float(row[0])*1000.0,row[1])
+                rng = rng + ",[%f,%f,%f]" % (float(row[0])*1000.0,row[2],row[3])
+        avg = avg + "]"
+        rng = rng + "]"
+        
+        self.close()
+        return avg,rng
+    
     def GetSensorHistory(self,Name,Group=False):
         self.open()
         self.use()
