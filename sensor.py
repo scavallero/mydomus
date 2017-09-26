@@ -29,6 +29,7 @@ import random
 import logging
 import dbutil
 import pattern
+import sensorload
 import os
 
 #########################################################################
@@ -170,15 +171,15 @@ def DoExtCmd(group):
 
         sensor = group['Metrics'][item]
         #bashCommand = os.path.join(".","plugins",sensor['command'])
-        bashCommand = os.path.join(CWD,"plugins",sensor['command'])
+        bashCommand = os.path.join(CWD,"plugins",sensor['Command'])
         logger.debug("ExtCmd: "+bashCommand)
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE,cwd=os.path.join(CWD,"plugins"))
         output, error = process.communicate()
 
         p = pattern.parser()
-        p.check(sensor['pattern'],output)
+        p.check(sensor['Pattern'],output)
         logger.debug("Result: "+output)
-        UpdateSensorValue(item,p.field[sensor['value']-1].strip())
+        UpdateSensorValue(item,p.field[sensor['Value']-1].strip())
         
                 
         
@@ -193,8 +194,47 @@ def run(config):
 
     logger.info("Thread started")
 
-    Config = config
+    #######################################################
+    # Setup Sensors
+    #######################################################
+
     db = dbutil.dbutil(config)
+    config = sensorload.load(config)
+    
+    if "Sensors" not in config.keys():
+        logger.error("No sensors has been yet configured")
+        return
+    
+    Sensors = config['Sensors']
+    
+    logger.info("Begin sensors setup")
+    for key in Sensors:
+        group=Sensors[key]
+        if group['Status'] == 'On':
+            Sensors[key]['Timestamp'] = "NA"
+            for item in group['Metrics']:
+                if item in Measures.keys():
+                    logger.error("Sensor %s duplicated" % item)
+                elif item == "config":
+                    logger.error("Invalid sensor name 'config' reserved keyword")
+                Measures[item] = []
+                Metrics[item] = group['Metrics'][item]
+                Metrics[item]["SensorName"] = key
+
+                # Add YLabel and Unit if not exist
+                if "Unit" not in Metrics[item].keys():
+                    Metrics[item]["Unit"] = ""
+                if "YLabel" not in Metrics[item].keys():
+                    Metrics[item]["YLabel"] = ""
+                
+                LastRead[item] = ("","")
+                db.AddSensosrName(item)
+                
+                
+    logger.info("End sensors setup")
+    
+    Config = config
+    
     
     @httpapp.addurl('/get/sensor/')
     def getSensor(p,m):
@@ -271,41 +311,7 @@ def run(config):
 
         return '{"status":"ok","value":%s}' % json.dumps(Sensors, sort_keys=True)
         
-    #######################################################
-    # Setup Metrics
-    #######################################################
-    
-    if "Sensors" not in config.keys():
-        logger.error("No sensors has been yet configured")
-        return
-    
-    Sensors = config['Sensors']
-    
-    logger.info("Begin sensors setup")
-    for key in Sensors:
-        group=Sensors[key]
-        if group['Status'] == 'On':
-            Sensors[key]['Timestamp'] = "NA"
-            for item in group['Metrics']:
-                if item in Measures.keys():
-                    logger.error("Sensor %s duplicated" % item)
-                elif item == "config":
-                    logger.error("Invalid sensor name 'config' reserved keyword")
-                Measures[item] = []
-                Metrics[item] = group['Metrics'][item]
-                Metrics[item]["SensorName"] = key
 
-                # Add YLabel and Unit if not exist
-                if "Unit" not in Metrics[item].keys():
-                    Metrics[item]["Unit"] = ""
-                if "YLabel" not in Metrics[item].keys():
-                    Metrics[item]["YLabel"] = ""
-                
-                LastRead[item] = ("","")
-                db.AddSensosrName(item)
-                
-                
-    logger.info("End sensors setup")
 
     ######################################################
     # Main sensor loop
