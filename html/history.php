@@ -73,8 +73,8 @@ require_once('authenticate.php');
     </div>
     
     <script>
-		sensor=getUrlParameter(sensor);
-		param=getUrlParameter(param);
+		sensor=getUrlParameter('sensor');
+		param=getUrlParameter('param');
 		doHistory(sensor,param);
     </script>
 </body>
