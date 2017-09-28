@@ -1,11 +1,24 @@
+function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+}
+
 function CreateDynamicGauge(sensorname,val) {
 	
 	//console.log(val);
 	
-	$.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
-		var newVal = JSON.parse(response);
+	$.post("api/get/sensor/"+sensorname,function(newVal){
 		style = gauge_style;
-		//style = linear_gauge_style;
 		style.title.text = newVal.ylabel;
 
 		style.series = [{
@@ -49,9 +62,8 @@ function CreateDynamicGauge(sensorname,val) {
 				setInterval(function () {
 					if(chart.series) { // Prevent calls on false redraw
 						var point = chart.series[0].points[0];
-						$.post("gateway.php",{"url": "/get/sensor/"+sensorname},function(response){
-						var newVal = JSON.parse(response);
-						point.update(newVal.value); 
+						$.post("api/get/sensor/"+sensorname,function(newVal){
+                            point.update(newVal.value); 
 						});
 					}
 				}, 30000);
@@ -62,8 +74,7 @@ function CreateDynamicGauge(sensorname,val) {
 	
 
 function CreateDynamicGraph(sensorname,val) {
-	$.post("gateway.php",{"url": "/get/daily/"+sensorname},function(response){
-	var newVal = JSON.parse(response);
+	$.post("api/get/daily/"+sensorname,function(newVal){
 	var data = newVal.value;      
 	var style = graph_style;
 	style.title.text = sensorname+' last 24 hours data';
@@ -82,8 +93,7 @@ function CreateDynamicGraph(sensorname,val) {
 		if (!chart.renderer.forExport) {
 			setInterval(function () {
 				if(chart.series) { // Prevent calls on false redraw
-					$.post("gateway.php",{"url": "/get/daily/"+sensorname},function(response){
-						var newVal = JSON.parse(response);
+					$.post("api/get/daily/"+sensorname,function(newVal){
 						var data = newVal.value; 
 						chart.series[0].update({
 							type: 'area',
@@ -103,14 +113,12 @@ function doHistory(sensor,param) {
 	console.log("Historical Data !!");
 	console.log(sensor);
 	console.log(param);
-	$.post("gateway.php",{"url": "/get/sensor/config"},function(response){
-        var jsonresp = JSON.parse(response);
+	$.post("api/get/sensor/config",function(jsonresp){
         var groups = jsonresp['value'];
 		jQuery.each(groups, function(item, val) {
 			jQuery.each(val['Metrics'], function(sensorname, val) {
 				if (sensor == sensorname) {
-					$.post("gateway.php",{"url": "/get/history/"+sensorname+"/"+param},function(response){
-						var newVal = JSON.parse(response);
+					$.post("api/get/history/"+sensorname+"/"+param,function(newVal){
 						var avg = newVal.avg;
 						var rng = newVal.rng;
 						var style = graph_history_style;
@@ -153,8 +161,7 @@ function doHistory(sensor,param) {
 
 function doDashboard() {
     
-    $.post("gateway.php",{"url": "/get/sensor/config"},function(response){
-        var jsonresp = JSON.parse(response);
+    $.post("api/get/sensor/config",function(jsonresp){
         var groups = jsonresp['value'];
         var html='<div class="panel-group" id="accordion">'
         jQuery.each(groups, function(item, val) {
