@@ -6,7 +6,7 @@ $password = null;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST["user"]) && !empty($_POST["password"])) {
         $user = $_POST["user"];
-        $password = $_POST["password"];     
+        $password = md5($_POST["password"]);     
         $string = file_get_contents("mydomus.conf");
         $conf = json_decode($string, true);
         $result = file_get_contents('http://127.0.0.1:'.strval($conf['ServerPort']).'/verify/'.$user.'/'.$password);

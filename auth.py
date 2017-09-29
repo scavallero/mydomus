@@ -46,7 +46,9 @@ def load():
 
     for item in user.keys():
         h = hashlib.sha224(item+user[item]['password']).hexdigest()
+        p = hashlib.md5(user[item]['password']).hexdigest()
         user[item]['token'] = h
+        user[item]['password'] = p
         logger.info('User: %s - %s' % (item,h))
 
     ### ADDED API ###
