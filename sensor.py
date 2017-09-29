@@ -317,14 +317,17 @@ def run(config):
         else:
             return '{"status":"error","value":"token authorization failure"}' 
         
-    @httpapp.addurl('/get/sensor/config')
+    @httpapp.addurl('/get/sensor/config/')
     def getSensorConfig(p,m):
         
         global Metrics
         global Measures
 
-        return '{"status":"ok","value":%s}' % json.dumps(Sensors, sort_keys=True)
-        
+        p = auth.decodeUrlToken(p)
+        if p:
+            return '{"status":"ok","value":%s}' % json.dumps(Sensors, sort_keys=True)
+        else:
+            return '{"status":"error","value":"token authorization failure"}'         
 
 
     ######################################################

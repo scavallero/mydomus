@@ -113,7 +113,7 @@ function doHistory(sensor,param,token) {
 	console.log("Historical Data !!");
 	console.log(sensor);
 	console.log(param);
-	$.post("api/get/sensor/config",function(jsonresp){
+	$.post("api/get/sensor/config/"+token,function(jsonresp){
         var groups = jsonresp['value'];
 		jQuery.each(groups, function(item, val) {
 			jQuery.each(val['Metrics'], function(sensorname, val) {
@@ -161,7 +161,7 @@ function doHistory(sensor,param,token) {
 
 function doDashboard(token) {
     
-    $.post("api/get/sensor/config",function(jsonresp){
+    $.post("api/get/sensor/config/"+token,function(jsonresp){
         var groups = jsonresp['value'];
         var html='<div class="panel-group" id="accordion">'
         jQuery.each(groups, function(item, val) {
