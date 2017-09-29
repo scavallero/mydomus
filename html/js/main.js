@@ -13,11 +13,15 @@ function getUrlParameter(sParam) {
     }
 }
 
+function mydomusApi(api,fn) {
+	$.post("api"+api+'/'+mydomusToken,fn)
+}
+
 function CreateDynamicGauge(sensorname,val,token) {
 	
 	//console.log(val);
 	
-	$.post("api/get/sensor/"+sensorname+"/"+token,function(newVal){
+	mydomusApi("/get/sensor/"+sensorname,function(newVal){
 		style = gauge_style;
 		style.title.text = newVal.ylabel;
 
@@ -62,7 +66,7 @@ function CreateDynamicGauge(sensorname,val,token) {
 				setInterval(function () {
 					if(chart.series) { // Prevent calls on false redraw
 						var point = chart.series[0].points[0];
-						$.post("api/get/sensor/"+sensorname+"/"+token,function(newVal){
+						mydomusApi("/get/sensor/"+sensorname,function(newVal){
                             point.update(newVal.value); 
 						});
 					}
@@ -74,7 +78,7 @@ function CreateDynamicGauge(sensorname,val,token) {
 	
 
 function CreateDynamicGraph(sensorname,val,token) {
-	$.post("api/get/daily/"+sensorname+"/"+token,function(newVal){
+	mydomusApi("/get/daily/"+sensorname,function(newVal){
 	var data = newVal.value;      
 	var style = graph_style;
 	style.title.text = sensorname+' last 24 hours data';
@@ -93,7 +97,7 @@ function CreateDynamicGraph(sensorname,val,token) {
 		if (!chart.renderer.forExport) {
 			setInterval(function () {
 				if(chart.series) { // Prevent calls on false redraw
-					$.post("api/get/daily/"+sensorname+"/"+token,function(newVal){
+					mydomusApi("/get/daily/"+sensorname,function(newVal){
 						var data = newVal.value; 
 						chart.series[0].update({
 							type: 'area',
@@ -113,12 +117,12 @@ function doHistory(sensor,param,token) {
 	console.log("Historical Data !!");
 	console.log(sensor);
 	console.log(param);
-	$.post("api/get/sensor/config/"+token,function(jsonresp){
+	mydomusApi("/get/sensor/config",function(jsonresp){
         var groups = jsonresp['value'];
 		jQuery.each(groups, function(item, val) {
 			jQuery.each(val['Metrics'], function(sensorname, val) {
 				if (sensor == sensorname) {
-					$.post("api/get/history/"+sensorname+"/"+param+"/"+token,function(newVal){
+					mydomusApi("/get/history/"+sensorname+"/"+param,function(newVal){
 						var avg = newVal.avg;
 						var rng = newVal.rng;
 						var style = graph_history_style;
@@ -161,7 +165,7 @@ function doHistory(sensor,param,token) {
 
 function doDashboard(token) {
     
-    $.post("api/get/sensor/config/"+token,function(jsonresp){
+	mydomusApi("/get/sensor/config",function(jsonresp){
         var groups = jsonresp['value'];
         var html='<div class="panel-group" id="accordion">'
         jQuery.each(groups, function(item, val) {
