@@ -32,7 +32,7 @@ require_once('authenticate.php');
 	<script src="js/main.js"></script>
 </head>
 
-<body onload="doDashboard();">    
+<body>    
     <!-- Navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
@@ -63,6 +63,11 @@ require_once('authenticate.php');
             <div id="sensorlist"></div>
         </div>
     </div>
-
+    <script>
+    <?php
+        $token = $_SESSION['token'];
+        echo 'doDashboard("'.$token.'");'; 
+    ?>
+    </script>
 </body>
 </html>

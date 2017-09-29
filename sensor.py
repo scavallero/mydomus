@@ -31,6 +31,8 @@ import dbutil
 import pattern
 import sensorload
 import os
+import auth
+
 
 #########################################################################
 # Module setup
@@ -242,18 +244,22 @@ def run(config):
         global Metrics
         global Measures
         global LastRead
-        
-        fields = p.split('/')
-        if len(fields) == 4: 
-            if fields[3] in LastRead.keys():
-                value = LastRead[fields[3]][0]
-                ylabel = Metrics[fields[3]]['YLabel']
-                unit = Metrics[fields[3]]['Unit']
-                return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s"}' % (value,ylabel,unit)
+
+        p = auth.decodeUrlToken(p)
+        if p:
+            fields = p.split('/')
+            if len(fields) == 4: 
+                if fields[3] in LastRead.keys():
+                    value = LastRead[fields[3]][0]
+                    ylabel = Metrics[fields[3]]['YLabel']
+                    unit = Metrics[fields[3]]['Unit']
+                    return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s"}' % (value,ylabel,unit)
+                else:
+                    return '{"status":"error","value":"sensor not exist"}'  
             else:
-                return '{"status":"error","value":"sensor not exist"}'  
+                return '{"status":"error","value":"missing sensor name"}'
         else:
-            return '{"status":"error","value":"missing sensor name"}'
+            return '{"status":"error","value":"token authorization failure"}'
 
     @httpapp.addurl('/get/daily/')
     def getDaily(p,m):
@@ -265,18 +271,22 @@ def run(config):
         output = ""
         db = dbutil.dbutil(Config)
 
-        fields = p.split('/')
-        if len(fields) == 4: 
-            if fields[3] in Measures.keys():
-                data = db.GetSensorDaily(fields[3])
-                ylabel = Metrics[fields[3]]['YLabel']
-                unit = Metrics[fields[3]]['Unit']
-                
-                return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s"}' % (data,ylabel,unit)
+        p = auth.decodeUrlToken(p)
+        if p:
+            fields = p.split('/')
+            if len(fields) == 4: 
+                if fields[3] in Measures.keys():
+                    data = db.GetSensorDaily(fields[3])
+                    ylabel = Metrics[fields[3]]['YLabel']
+                    unit = Metrics[fields[3]]['Unit']
+                    
+                    return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s"}' % (data,ylabel,unit)
+                else:
+                    return '{"status":"error","value":"sensor not exist"}'  
             else:
-                return '{"status":"error","value":"sensor not exist"}'  
+                return '{"status":"error","value":"missing sensor name"}'
         else:
-            return '{"status":"error","value":"missing sensor name"}'
+            return '{"status":"error","value":"token authorization failure"}'
 
     @httpapp.addurl('/get/history/')
     def getHistory(p,m):
@@ -288,20 +298,24 @@ def run(config):
         output = ""
         db = dbutil.dbutil(Config)
 
-        fields = p.split('/')
-        if len(fields) == 5: 
-            if fields[3] in Measures.keys():
-                if fields[4] == 'null':
-                    avg,rng = db.GetSensorHistory(fields[3],True)
+        p = auth.decodeUrlToken(p)
+        if p:
+            fields = p.split('/')
+            if len(fields) == 5: 
+                if fields[3] in Measures.keys():
+                    if fields[4] == 'null':
+                        avg,rng = db.GetSensorHistory(fields[3],True)
+                    else:
+                        avg,rng = db.GetSensorLastdays(fields[3],True,days=int(fields[4]))
+                    ylabel = Metrics[fields[3]]['YLabel']
+                    unit = Metrics[fields[3]]['Unit']
+                    return '{"status":"ok","avg":%s,"rng":%s,"ylabel":"%s","unit":"%s"}' % (avg,rng,ylabel,unit)
                 else:
-                    avg,rng = db.GetSensorLastdays(fields[3],True,days=int(fields[4]))
-                ylabel = Metrics[fields[3]]['YLabel']
-                unit = Metrics[fields[3]]['Unit']
-                return '{"status":"ok","avg":%s,"rng":%s,"ylabel":"%s","unit":"%s"}' % (avg,rng,ylabel,unit)
+                    return '{"status":"error","value":"sensor not exist"}'  
             else:
-                return '{"status":"error","value":"sensor not exist"}'  
+                return '{"status":"error","value":"missing sensor name"}'
         else:
-            return '{"status":"error","value":"missing sensor name"}'
+            return '{"status":"error","value":"token authorization failure"}' 
         
     @httpapp.addurl('/get/sensor/config')
     def getSensorConfig(p,m):

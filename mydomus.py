@@ -30,6 +30,7 @@ import scheduler
 import logging
 import logging.handlers
 import dbutil
+import auth
 
 
 ## SETUP DEFAULTS AND LOGGER ##
@@ -79,6 +80,7 @@ def root(p,m):
 
 if __name__ == "__main__":
     logger.info("Mydomus service started")
+    auth.load()
     db = dbutil.dbutil(config)
     db.InitDB()
     t1 = threading.Thread(target=sensor.run,args=(config,))

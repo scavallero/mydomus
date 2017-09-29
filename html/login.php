@@ -1,15 +1,19 @@
 <?php
 session_start();
-$email = null;
+$user = null;
 $password = null;
-$adminemail = 'user@gmail.com';
-$adminpassword = 'password';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if(!empty($_POST["email"]) && !empty($_POST["password"])) {
-        $email = $_POST["email"];
+    if(!empty($_POST["user"]) && !empty($_POST["password"])) {
+        $user = $_POST["user"];
         $password = $_POST["password"];     
-        if($email == $adminemail && $password == $adminpassword) {
-            $_SESSION["authenticated"] = 'true';
+        $string = file_get_contents("mydomus.conf");
+        $conf = json_decode($string, true);
+        $result = file_get_contents('http://127.0.0.1:'.strval($conf['ServerPort']).'/verify/'.$user.'/'.$password);
+        $result_json = json_decode($result, true);
+        if($result_json['status'] == 'ok') {
+            $_SESSION['authenticated'] = 'true';
+            $_SESSION['token'] = $result_json['token'];
             header("Location: index.php", true, 302);
             exit;
         }
@@ -67,13 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div  class="navbar-brand">MyDomus</div>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li class="acrive"><a href="index.php"><span class="fa fa-home solo">Home</span></a></li>
-					<li><a href="#anch1"><span class="fa fa-anchor solo">Alerts</span></a></li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Sign Out</span></a></li>
-				</ul>
+
 			</div>
 		</div>
 	</nav>
@@ -82,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <form class="form-signin" action="login.php" method="POST">
             <h2 class="form-signin-heading">Please sign in </h2>
-            <label for="inputEmail" class="sr-only">Email address</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus name="email">
+            <label for="inputUser" class="sr-only">User</label>
+            <input type="text" id="inputUser" class="form-control" placeholder="User" required autofocus name="user">
             <label for="inputPassword" class="sr-only">Password</label>
             <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
             <div class="checkbox">
