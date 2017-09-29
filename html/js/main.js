@@ -17,7 +17,13 @@ function mydomusApi(api,fn) {
 	$.post("api"+api+'/'+mydomusToken,fn)
 }
 
-function CreateDynamicGauge(sensorname,val,token) {
+function doSettings() {
+	html = '<h3>User token: '+mydomusToken+'</h3>';
+    $("#settings_data").html(html);
+	console.log(mydomusToken);
+}
+
+function CreateDynamicGauge(sensorname,val) {
 	
 	//console.log(val);
 	
@@ -77,7 +83,7 @@ function CreateDynamicGauge(sensorname,val,token) {
 }
 	
 
-function CreateDynamicGraph(sensorname,val,token) {
+function CreateDynamicGraph(sensorname,val) {
 	mydomusApi("/get/daily/"+sensorname,function(newVal){
 	var data = newVal.value;      
 	var style = graph_style;
@@ -112,7 +118,7 @@ function CreateDynamicGraph(sensorname,val,token) {
 	});
 }
 
-function doHistory(sensor,param,token) {
+function doHistory(sensor,param) {
 
 	console.log("Historical Data !!");
 	console.log(sensor);
@@ -163,7 +169,7 @@ function doHistory(sensor,param,token) {
 }
 
 
-function doDashboard(token) {
+function doDashboard() {
     
 	mydomusApi("/get/sensor/config",function(jsonresp){
         var groups = jsonresp['value'];
@@ -220,10 +226,10 @@ function doDashboard(token) {
             jQuery.each(val['Metrics'], function(sensorname, val) {            
                 
                 // Create dynamic gauge
-				CreateDynamicGauge(sensorname,val,token);
+				CreateDynamicGauge(sensorname,val);
 				
                 // Create dynamic graph
-                CreateDynamicGraph(sensorname,val,token);
+                CreateDynamicGraph(sensorname,val);
                 
                 console.log(sensorname);
             });

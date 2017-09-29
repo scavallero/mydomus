@@ -33,7 +33,7 @@ require_once('authenticate.php');
 	<script src="js/main.js"></script>
 </head>
 
-<body>    
+<body onload="doDashboard();"> 
     <!-- Navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
@@ -52,6 +52,9 @@ require_once('authenticate.php');
 					<li><a href="#anch1"><span class="fa fa-anchor solo">Alerts</span></a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
+					<li><a href="settings.php"><span class="glyphicon glyphicon-cog"></span> Settings</span></a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
 					<li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Sign Out</span></a></li>
 				</ul>
 			</div>
@@ -64,11 +67,6 @@ require_once('authenticate.php');
             <div id="sensorlist"></div>
         </div>
     </div>
-    <script>
-    <?php
-        $token = $_SESSION['token'];
-        echo 'doDashboard("'.$token.'");'; 
-    ?>
-    </script>
+
 </body>
 </html>

@@ -33,7 +33,7 @@ require_once('authenticate.php');
 	<script src="js/main.js"></script>
 	
 </head>
-<body>
+<body onload="doSettings();">
     <!-- Navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
@@ -66,7 +66,7 @@ require_once('authenticate.php');
         <div class="page-content">
             <div class="container-fluid">
 				<div>
-					<div id="hdata"/>
+					<div id="settings_data"/>
 				</div>
                 <br>
 				<div>
@@ -75,14 +75,6 @@ require_once('authenticate.php');
             </div>
         </div>
     </div>
-    
-    <script>
-    <?php
-        $sensor = $_GET['sensor'];
-        $param = $_GET['param'];
-        $token = $_SESSION['token'];
-        echo 'doHistory("'.$sensor.'","'.$param.'");'; 
-    ?>
-    </script>
+	
 </body>
 </html>
