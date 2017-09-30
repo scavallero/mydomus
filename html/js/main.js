@@ -18,9 +18,17 @@ function mydomusApi(api,fn) {
 }
 
 function doSettings() {
-	html = '<h3>User token: '+mydomusToken+'</h3>';
-    $("#settings_data").html(html);
-	console.log(mydomusToken);
+    $("#field_token").val(mydomusToken);
+	html = ''
+	mydomusApi("/get/sensor/config",function(jsonresp){
+        var groups = jsonresp['value'];
+		jQuery.each(groups, function(item, val) {
+			jQuery.each(val['Metrics'], function(sensorname, val) {
+				html +='    <option>'+sensorname+'</option>';
+			});
+		});
+		$("#metrics_list").html(html);
+	});
 }
 
 function CreateDynamicGauge(sensorname,val) {

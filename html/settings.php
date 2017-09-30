@@ -62,19 +62,39 @@ require_once('authenticate.php');
 	</nav>
 
     <!-- Page content -->
-    <div id="page-content-wrapper">
-        <div class="page-content">
-            <div class="container-fluid">
-				<div>
-					<div id="settings_data"/>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12 col">
+		
+				<div id="settings_data">
 				</div>
-                <br>
-				<div>
-					<a href="index.php" class="btn btn-primary btn-block">Back to home</a>
+				
+				<form class="input-append">
+					<div id="field">
+						<label for="field_token">User token:</label>
+						<input autocomplete="off" class="input" id="field_token" name="prof1" type="text" size="60" readonly></input>
+					</div>
+				</form>
+			
+				<div class="form-group" style="width: 200px">
+					<label for="metrics_list">Select list:</label>
+					<select class="form-control" id="metrics_list">
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+					</select>
 				</div>
-            </div>
-        </div>
-    </div>
+
+			</div>
+		</div>
+		<br>
+		<div>
+			<a href="index.php" class="btn btn-primary btn-block">Back to home</a>
+		</div>
+	</div>
+
 	
 </body>
 </html>

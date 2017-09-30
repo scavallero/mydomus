@@ -4,7 +4,7 @@ body {
   background:#333;
 }
 
-p,h2,h3 {
+p,h2,h3,label {
   color: white;
 }
 
@@ -24,4 +24,9 @@ p,h2,h3 {
 
 .container {
 max-width: 400px;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
 }
