@@ -30,37 +30,43 @@ import dbutil
 ########################################################################
 
 logger = logging.getLogger("Mydomus")
-activity = [True]*4
 
-def doActivity(a,config):
+
+#######################################################
+# Activity routine
+# config['HistoryPeriod'] minute between two activities
+#######################################################
+
+def doActivity(iday,config):
 
     global activity
 
-    h = ((int(time.time())/3600))*3600
+    h = ((int(time.time())/(config['HistoryPeriod']*60)))*(config['HistoryPeriod']*60)
     db = dbutil.dbutil(config)
     
-    if activity[a]:
-        logger.info("Begin daily activity")
-        activity[a] = False
-        # Add measure average for the last 6 hours
-        db.AddMeasureAverage(h-6*3600,h)
-        logger.info("Average Window: %f %f" % (h-6*3600,h))
-        if a == 0:
-            activity[3] = True
-            db.ClearSensorDaily()
-        else:
-            activity[a-1] = True
-        logger.info("End daily activity")
-    
+    logger.info("Begin daily activity")
+    # Add measure average for the last 6 hours
+    db.AddMeasureAverage(h-(config['HistoryPeriod']*60),h)
+    logger.info("Average Window: %f %f" % (h-(config['HistoryPeriod']*60),h))
+    if iday == 0:
+        db.ClearSensorDaily()
+    logger.info("End daily activity")
+        
 def run(config):
 
     # Wait for sensor setup completed
     time.sleep(10)
     
     db = dbutil.dbutil(config)
+    last_iday = -1
     while(True):
         logger.info("Begin scheduler tasks")
         now = datetime.datetime.now()
+        sday = now.hour*3600+now.minute*60+now.second # Seconds of the day
+        iday = int(sday/(config['HistoryPeriod']*60)) # Interval of the day
+        logger.info("Day interval %d " % iday)
+
+        ###### Five minutes routine ######
         
         for name in sensor.Measures:
 
@@ -87,8 +93,10 @@ def run(config):
                     if sensor.Metrics[name]["ZeroFill"]:
                         db.AddSensorValue(name,value,timestamp)                
 
-        if now.hour % 6 == 0:
-            doActivity(now.hour/6,config)
+        ###### In case start Acitivy ######
+        if iday != last_iday:
+            doActivity(iday,config)
+            last_iday = iday
 
         logger.info("End scheduler tasks")
         time.sleep(300)

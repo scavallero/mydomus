@@ -304,7 +304,7 @@ def run(config):
             if len(fields) == 5: 
                 if fields[3] in Measures.keys():
                     if fields[4] == 'null':
-                        avg,rng = db.GetSensorHistory(fields[3],True)
+                        avg,rng = db.GetSensorHistory(fields[3],False)
                     else:
                         avg,rng = db.GetSensorLastdays(fields[3],True,days=int(fields[4]))
                     ylabel = Metrics[fields[3]]['YLabel']
