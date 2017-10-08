@@ -132,7 +132,7 @@ def DoCpuTempRead(group):
 
 def DoAurora(group):
 
-    bashCommand = "aurora -a %d -Y6 -d0 %s " % (group['Address'],group['Port'])
+    bashCommand = "aurora -a %d -Y6 -d0 -e %s " % (group['Address'],group['Port'])
     process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()
         
