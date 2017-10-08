@@ -79,6 +79,8 @@ class dbutil():
               CREATE TABLE IF NOT EXISTS sensors (
                  ID Int NOT NULL AUTO_INCREMENT,
                  Name varchar(255),
+                 SensorType varchar(255),
+                 MetricsClass varchar(255),
                  PRIMARY KEY (ID)
               );
               """ 
@@ -114,7 +116,7 @@ class dbutil():
 
         return True
 
-    def AddSensosrName(self,Name):
+    def AddSensor(self,Name,SensorType,MetricsClass):
         self.open()
         self.use()
         
@@ -125,8 +127,8 @@ class dbutil():
         row = self.cur.fetchone()
         if row[0] == 0:
             sql = """
-                    INSERT INTO sensors(Name) VALUES ('%s');
-                  """ % Name
+                    INSERT INTO sensors(Name,SensorType,MetricsClass) VALUES ('%s','%s','%s');
+                  """ % (Name,SensorType,MetricsClass)
             self.cur.execute(sql)
         
         self.close()
