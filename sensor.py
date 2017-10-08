@@ -143,7 +143,11 @@ def DoAurora(group):
             if "Grid Power Reading" in w and  group['Metrics'][item]['Class'] == "power":
                 value = "%.1f" % float(w.split('=')[1].strip().split(' ')[0])
                 UpdateSensorValue(item,value)
-        
+                for w in output.split('\n'):
+            if "Daily Energy " in w and  group['Metrics'][item]['Class'] == "energy":
+                value = "%.1f" % float(w.split('=')[1].strip().split(' ')[0])
+                UpdateSensorValue(item,value)
+                
 def CheckExtCmd(group):
     result = True
     for item in group['Metrics']:
