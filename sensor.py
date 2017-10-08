@@ -132,18 +132,17 @@ def DoCpuTempRead(group):
 
 def DoAurora(group):
 
+    bashCommand = "aurora -a %d -Y6 -d0 %s " % (group['Address'],group['Port'])
+    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+    output, error = process.communicate()
+        
     for item in group['Metrics']:
-
         sensor = group['Metrics'][item]
         value = "NA"
-
-        bashCommand = "aurora -a %d -Y6 -d0 %s " % (sensor['Address'],sensor['Port'])
-        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        output, error = process.communicate()
         for w in output.split('\n'):
-            if "Grid Power Reading" in w:
+            if "Grid Power Reading" in w and  group['Metrics'][item]['Class'] == "power":
                 value = "%.1f" % float(w.split('=')[1].strip().split(' ')[0])
-        UpdateSensorValue(item,value)
+                UpdateSensorValue(item,value)
         
 def CheckExtCmd(group):
     result = True
