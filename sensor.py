@@ -230,7 +230,7 @@ def run(config):
                     Metrics[item]["YLabel"] = ""
                 
                 LastRead[item] = ("","")
-                db.AddSensor(item)
+                db.AddSensor(item,group['Type'],Metrics[item]['Class'])
                 
                 
     logger.info("End sensors setup")
