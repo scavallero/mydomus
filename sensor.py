@@ -255,8 +255,8 @@ def run(config):
                     value = LastRead[fields[3]][0]
                     ylabel = Metrics[fields[3]]['YLabel']
                     unit = Metrics[fields[3]]['Unit']
-                    classe = Metrics[fields[3]]['Class']
-                    return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s","class":"%s"}' % (value,ylabel,unit,classe)
+                    mclass = Metrics[fields[3]]['Class']
+                    return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s","mclass":"%s"}' % (value,ylabel,unit,mclass)
                 else:
                     return '{"status":"error","value":"sensor not exist"}'  
             else:
@@ -282,8 +282,8 @@ def run(config):
                     data = db.GetSensorDaily(fields[3])
                     ylabel = Metrics[fields[3]]['YLabel']
                     unit = Metrics[fields[3]]['Unit']
-                    classe = Metrics[fields[3]]['Class']
-                    return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s","class":"%s"}' % (data,ylabel,unit,classe)
+                    mclass = Metrics[fields[3]]['Class']
+                    return '{"status":"ok","value":%s,"ylabel":"%s","unit":"%s","mclass":"%s"}' % (data,ylabel,unit,mclass)
                 else:
                     return '{"status":"error","value":"sensor not exist"}'  
             else:
@@ -312,8 +312,8 @@ def run(config):
                         avg,rng = db.GetSensorLastdays(fields[3],True,days=int(fields[4]))
                     ylabel = Metrics[fields[3]]['YLabel']
                     unit = Metrics[fields[3]]['Unit']
-                    classe = Metrics[fields[3]]['Class']
-                    return '{"status":"ok","avg":%s,"rng":%s,"ylabel":"%s","unit":"%s","class":"%s"}' % (avg,rng,ylabel,unit,classe)
+                    mclass = Metrics[fields[3]]['Class']
+                    return '{"status":"ok","avg":%s,"rng":%s,"ylabel":"%s","unit":"%s","mclass":"%s"}' % (avg,rng,ylabel,unit,mclass)
                 else:
                     return '{"status":"error","value":"sensor not exist"}'  
             else:

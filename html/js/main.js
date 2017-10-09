@@ -106,6 +106,8 @@ function CreateDynamicGraph(sensorname,val) {
 		name: 'Temp',
 		data: data
 	}];
+	
+	if newVal.mclass
 
 	var graph1 = Highcharts.chart('graph_'+sensorname,style,function (chart) {
 		if (!chart.renderer.forExport) {
