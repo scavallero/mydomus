@@ -144,7 +144,7 @@ def DoAurora(group):
                 value = "%.1f" % float(w.split('=')[1].strip().split(' ')[0])
                 UpdateSensorValue(item,value)
             if "Daily Energy " in w and  group['Metrics'][item]['Class'] == "energy":
-                value = "%.1f" % float(w.split('=')[1].strip().split(' ')[0])
+                value = "%.2f" % float(w.split('=')[1].strip().split(' ')[0])
                 UpdateSensorValue(item,value)
                 
 def CheckExtCmd(group):
