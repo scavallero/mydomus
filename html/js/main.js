@@ -107,7 +107,13 @@ function CreateDynamicGraph(sensorname,val) {
 		data: data
 	}];
 	
-	if newVal.mclass
+	if (newVal.mclass == 'energy') {
+		style.series = [{
+			type: 'column',
+			name: 'Temp',
+			data: data
+		}];
+	}
 
 	var graph1 = Highcharts.chart('graph_'+sensorname,style,function (chart) {
 		if (!chart.renderer.forExport) {
@@ -141,6 +147,15 @@ function doHistory(sensor,param) {
 					mydomusApi("/get/history/"+sensorname+"/"+param,function(newVal){
 						var avg = newVal.avg;
 						var rng = newVal.rng;
+						var cnt	= [];
+						
+						// For energy counter plot only max values
+						if (newVal.mclass == 'energy') {
+							for (var i = 0; i < rng.length; i++) {
+								cnt[i] = [rng[i][0],rng[i][2]]
+							}
+						}
+						
 						var style = graph_history_style;
 						style.chart.backgroundColor = "#FFFFFF";
 						if (param == 30) {
@@ -170,6 +185,16 @@ function doHistory(sensor,param) {
 								enabled: false
 							}
 						}];
+						
+						// For energy counter plot only max values
+						if (newVal.mclass == 'energy') {
+							style.series = [{
+								name: 'Count',
+								data: cnt,
+								type: 'column'
+							}];
+						}
+						
 						var chart1 = Highcharts.chart('hdata',style);
 					});
 				}
