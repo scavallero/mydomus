@@ -98,6 +98,7 @@ def load(config):
 
 
                             if not fail:
+                                c['Sensors'][sensor]['Filename']=item
                                 config['Sensors'][sensor] = c['Sensors'][sensor]
                                 for k in local_mtr.keys():
                                     mtr[k] = local_mtr[k]
