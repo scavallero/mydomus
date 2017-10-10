@@ -17,12 +17,26 @@ p,h1,h2,h3,label {
   background-color: #ffffff;
 }
 
+th {
+    background-color: #337AB7;
+    color: #ffffff;
+} 
+
 .fixed-table-pagination  {
   background-color: #ffffff;
 }
 
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+   background-color: #ecf6fc;
+}
+
 .table-hover tbody tr:hover {
-  background-color: #337AB7;
+  background-color: #aaaaaa;
+  color: #FFFFFF;
+}
+
+.table-striped > tbody > tr:nth-child(odd):hover > td, .table-striped > tbody > tr:nth-child(odd):hover > th {
+  background-color: #aaaaaa;
   color: #FFFFFF;
 }
 
