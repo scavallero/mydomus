@@ -81,12 +81,12 @@ require_once('authenticate.php');
                 <table id="metrics_table">
                     <thead>
                         <tr>
-                            <th data-field="ChkboxEnabled">Enabled</th>
-                            <th data-field="Metric">Metric</th>
-                            <th data-field="Sensor">Sensor</th>
-                            <th data-field="MClass">Class</th>
-                            <th data-field="Filename">Config Filename</th>
-                            <th data-field="BtnReset">Delete History</th>
+                            <th data-field="ChkboxEnabled" data-align="center" >Enabled</th>
+                            <th data-field="Metric" data-align="center">Metric</th>
+                            <th data-field="Sensor" data-align="center">Sensor</th>
+                            <th data-field="MClass" data-align="center">Class</th>
+                            <th data-field="Filename" data-align="center">Config Filename</th>
+                            <th data-field="BtnReset" data-align="center">Action</th>
                         </tr>
                     </thead>
                 </table>

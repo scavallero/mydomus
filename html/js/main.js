@@ -28,13 +28,16 @@ function doSettings() {
         i = 0;
 		jQuery.each(groups, function(sensorname, val) {
 			jQuery.each(val['Metrics'], function(metricname, mval) {
+				var btn = '<a class="btn btn-warning" href="history.php?sensor='+metricname+'&param=null'+'">View history</a>'
+				btn += '&nbsp;&nbsp;<button type="button" class="btn btn-danger">Delete History <span class="glyphicon glyphicon-remove-sign"></span></button>'
+				
 				data[i] = {
                     "ChkboxEnabled" : '<input type="checkbox" id="ch'+i+'" checked="true"></input>',
                     "Metric" : metricname,
                     "Sensor" :sensorname,
                     "MClass"  : mval['Class'],
                     "Filename" : val['Filename'],
-                    "BtnReset" : '<button type="button" class="btn btn-danger">Delete History <span class="glyphicon glyphicon-remove-sign"></span></button>'
+                    "BtnReset" : btn
                 };
                 i++;
 			});
@@ -258,8 +261,7 @@ function doDashboard() {
                 html += '                         </div>'
                 html += '                     </div>'
                 html += '                </div>'
-				html += '                <br><a class="btn btn-primary btn-block" href="history.php?sensor='+sensorname+'&param=30'+'">View last 30 days</a>';
-                html += '                <br><a class="btn btn-primary btn-block" href="history.php?sensor='+sensorname+'&param=null'+'">View history</a>';                
+				html += '                <br><a class="btn btn-primary btn-block" href="history.php?sensor='+sensorname+'&param=30'+'">View last 30 days</a>';              
                 html += '            </div>'
                 html += '        </div>'
                 html +='    </div>';
