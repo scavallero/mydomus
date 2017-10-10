@@ -25,6 +25,7 @@ require_once('authenticate.php');
 
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script> 
+    <script src="js/bootstrap-table.min.js"></script>
     <script src="js/highcharts.js"></script>
 	<script src="js/highcharts-more.js"></script>
     <script src="js/modules/exporting.js"></script>
@@ -77,21 +78,24 @@ require_once('authenticate.php');
 					</div>
 				</form>
 			
-				<div class="form-group" style="width: 200px">
-					<label for="metrics_list">Select list:</label>
-					<select class="form-control" id="metrics_list">
-						<option>1</option>
-						<option>2</option>
-						<option>3</option>
-						<option>4</option>
-					</select>
-				</div>
+                <table id="metrics_table">
+                    <thead>
+                        <tr>
+                            <th data-field="ChkboxEnabled">Enabled</th>
+                            <th data-field="Metric">Metric</th>
+                            <th data-field="Sensor">Sensor</th>
+                            <th data-field="MClass">Class</th>
+                            <th data-field="Filename">Config Filename</th>
+                            <th data-field="BtnReset">Delete History</th>
+                        </tr>
+                    </thead>
+                </table>
 
 			</div>
 		</div>
 		<br>
 		<div>
-			<a href="index.php" class="btn btn-primary btn-block">Back to home</a>
+			<a href="index.php" class="btn btn-success">Apply</a> <a href="index.php" class="btn btn-primary">Cancel</a>
 		</div>
 	</div>
 

@@ -18,16 +18,34 @@ function mydomusApi(api,fn) {
 }
 
 function doSettings() {
+    
+    var data = [];
+    
     $("#field_token").val(mydomusToken);
-	html = ''
+	
 	mydomusApi("/get/sensor/config",function(jsonresp){
         var groups = jsonresp['value'];
-		jQuery.each(groups, function(item, val) {
-			jQuery.each(val['Metrics'], function(sensorname, val) {
-				html +='    <option>'+sensorname+'</option>';
+        i = 0;
+		jQuery.each(groups, function(sensorname, val) {
+			jQuery.each(val['Metrics'], function(metricname, mval) {
+				data[i] = {
+                    "ChkboxEnabled" : '<input type="checkbox" id="ch'+i+'" checked="true"></input>',
+                    "Metric" : metricname,
+                    "Sensor" :sensorname,
+                    "MClass"  : mval['Class'],
+                    "Filename" : val['Filename'],
+                    "BtnReset" : '<button type="button" class="btn btn-danger">Delete History <span class="glyphicon glyphicon-remove-sign"></span></button>'
+                };
+                i++;
 			});
 		});
-		$("#metrics_list").html(html);
+        console.log(data);
+        $('#metrics_table').bootstrapTable({
+        data: data,
+        striped: true,
+        pagination: true,
+        pageSize: 10
+        });
 	});
 }
 
