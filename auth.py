@@ -34,46 +34,6 @@ logger = logging.getLogger("Mydomus")
 
 user = {}
 
-def load():
-    global user
-    logger.info("Start loading user authorization")
-    CWD = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(CWD,"user.conf")) as data_file:
-            try:
-                user = json.load(data_file)
-            except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                logger.error('json decoding failure user.conf')
-
-    for item in user.keys():
-        h = hashlib.sha224(item+user[item]['password']).hexdigest()
-        p = hashlib.md5(user[item]['password']).hexdigest()
-        user[item]['token'] = h
-        user[item]['password'] = p
-        logger.info('User: %s - %s' % (item,h))
-
-    ### ADDED API ###
-
-    @httpapp.addurl('/verify/')
-    def root(p,m):
-        
-        global user
-
-        fields = p.split('/')
-        if len(fields) == 4:
-            if fields[2] in user.keys():
-                if fields[3] == user[fields[2]]['password']:
-                    return '{"status":"ok","token":"%s"}' % user[fields[2]]['token']
-                else:
-                    return '{"status":"error","reason":"wrong password"}'        
-            else:
-                return '{"status":"error","reason":"user unknown"}'  
-        else:
-            return '{"status":"error","reason":"missing user or password"}'
-        
-
-    logger.info("User authorization loaded")
-                
-
 def verifyUser(usr,pswd):
 
     res = False
@@ -117,4 +77,60 @@ def decodeUrlToken(url):
         return new_url
     else:
         return None
+    
+def load():
+    global user
+    logger.info("Start loading user authorization")
+    CWD = os.path.dirname(os.path.realpath(__file__))
+    with open(os.path.join(CWD,"user.conf")) as data_file:
+            try:
+                user = json.load(data_file)
+            except ValueError:  # includes simplejson.decoder.JSONDecodeError
+                logger.error('json decoding failure user.conf')
+
+    for item in user.keys():
+        h = hashlib.sha224(item+user[item]['password']).hexdigest()
+        p = hashlib.md5(user[item]['password']).hexdigest()
+        user[item]['token'] = h
+        user[item]['password'] = p
+        logger.info('User: %s - %s' % (item,h))
+
+    ### ADDED API ###
+
+    @httpapp.addurl('/verify/')
+    def url_verify(p,m):
+        
+        global user
+
+        fields = p.split('/')
+        if len(fields) == 4:
+            if fields[2] in user.keys():
+                if fields[3] == user[fields[2]]['password']:
+                    return '{"status":"ok","token":"%s"}' % user[fields[2]]['token']
+                else:
+                    return '{"status":"error","reason":"wrong password"}'        
+            else:
+                return '{"status":"error","reason":"user unknown"}'  
+        else:
+            return '{"status":"error","reason":"missing user or password"}'           
+
+    @httpapp.addurl('/checktoken/')
+    def url_checktoken(p,m):
+        
+        global user
+
+        fields = p.split('/')
+        if len(fields) == 3:
+            token = fields[2]
+            res,usr = verifyToken(token)
+            if res:
+                return '{"status":"ok","user":"%s"}' % usr
+            else:
+                return '{"status":"error","reason":"wrong token"}'          
+        else:
+            return '{"status":"error","reason":"missing token"}'
+        
+    logger.info("User authorization loaded")
+    
+
 

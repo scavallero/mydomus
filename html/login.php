@@ -6,7 +6,7 @@ $password = null;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST["user"]) && !empty($_POST["password"])) {
         $user = $_POST["user"];
-        $password = md5($_POST["password"]);     
+        $password = md5($_POST["password"]);    
         $string = file_get_contents("mydomus.conf");
         $conf = json_decode($string, true);
         $result = file_get_contents('http://127.0.0.1:'.strval($conf['ServerPort']).'/verify/'.$user.'/'.$password);
@@ -14,6 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if($result_json['status'] == 'ok') {
             $_SESSION['authenticated'] = 'true';
             $_SESSION['token'] = $result_json['token'];
+            
+            // Remember me cookie
+            if (!empty($_POST["remember"])) {
+                setcookie ("keepme",$result_json['token'],time()+ (10 * 365 * 24 * 60 * 60));
+            }
+            
             header("Location: index.php", true, 302);
             exit;
         }
@@ -86,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
             <div class="checkbox">
             <label>
-                <input type="checkbox" value="remember-me" name="remember"> <p>Remember me</p>
+                <input type="checkbox" value="true" name="remember"> <p>Keep me signed in</p>
             </label>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
