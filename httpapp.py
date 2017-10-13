@@ -22,6 +22,7 @@
 
 
 import BaseHTTPServer
+import inspect
 import logging
 import logging.handlers
 
@@ -76,7 +77,13 @@ class handler_class(BaseHTTPServer.BaseHTTPRequestHandler):
             while subpath != '/':
                 if subpath in urlf.keys():
                     self._set_headers(200)
-                    self.wfile.write(urlf[subpath](self.path,self.command))
+                    a = len(inspect.getargspec(urlf[subpath]).args)
+                    if a == 1:
+                        self.wfile.write(urlf[subpath](self.path))
+                    elif a == 2:
+                        self.wfile.write(urlf[subpath](self.path,self.command))
+                    elif a == 3:
+                        self.wfile.write(urlf[subpath](self.path,self.command,None))
                     return
                 else:
                     k = subpath[:-1].rfind('/')
@@ -88,10 +95,13 @@ class handler_class(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_POST(self):
         global urlf
         global errorf
-        
+
+        content_len = int(self.headers.getheader('content-length', 0))
+        post_body = self.rfile.read(content_len)
+
         if self.path in urlf.keys():
             self._set_headers(200)
-            self.wfile.write(urlf[self.path](self.path,self.command))
+            self.wfile.write(urlf[self.path](self.path,self.command),post_body)
             return
         else:
             k = self.path.rfind('/')
@@ -99,7 +109,13 @@ class handler_class(BaseHTTPServer.BaseHTTPRequestHandler):
             while subpath != '/':
                 if subpath in urlf.keys():
                     self._set_headers(200)
-                    self.wfile.write(urlf[subpath](self.path,self.command))
+                    a = len(inspect.getargspec(urlf[subpath]).args)
+                    if a == 1:
+                        self.wfile.write(urlf[subpath](self.path))
+                    elif a == 2:
+                        self.wfile.write(urlf[subpath](self.path,self.command))
+                    elif a == 3:
+                        self.wfile.write(urlf[subpath](self.path,self.command,post_body))
                     return
                 else:
                     k = subpath[:-1].rfind('/')

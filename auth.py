@@ -86,7 +86,7 @@ def load():
             try:
                 user = json.load(data_file)
             except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                logger.error('json decoding failure user.conf')
+                logger.critical('json decoding failure user.conf')
 
     for item in user.keys():
         h = hashlib.sha224(item+user[item]['password']).hexdigest()

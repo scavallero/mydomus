@@ -104,7 +104,8 @@ def load(config):
                                     mtr[k] = local_mtr[k]
                         
             except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                logger.error('json decoding failure: %s' % item)
+                logger.error('json decoding failure [%s]' % item)
+                
     logger.info("Sensors configurations loaded")
     
     return config

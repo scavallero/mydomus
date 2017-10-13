@@ -44,6 +44,8 @@ Metrics = {}
 Measures = {}
 LastRead = {}
 Config = {}
+Callbacks = {}
+Handlers = {}
 
 CWD = os.path.dirname(os.path.realpath(__file__))
 
@@ -72,9 +74,9 @@ def UpdateSensorValue(Name,Value):
             LastRead[Name] = (Value,timestamp)
             logger.info('Sensor [%s] read [%s]' % (Name,Value))
         else:
-            logger.error('Update sensor [%s] failure for value [%s]' % (Name,Value))
+            logger.warning('Update sensor [%s] failure for value [%s]' % (Name,Value))
     else:
-        logger.error('Update sensor [%s] failure' % Name)
+        logger.warning('Update sensor [%s] failure' % Name)
 
 def DoWunder(group):
 
@@ -107,6 +109,10 @@ def DoWunder(group):
             UpdateSensorValue(item, value)
     else:
         logger.error("Missing Apikey or IDStation")
+
+#############################################################
+#####                  Random Sensor                    #####
+#############################################################
         
 def DoRandom(group):
 
@@ -117,7 +123,7 @@ def DoRandom(group):
         start_int = sensor['RangeMin']
         end_init = sensor['RangeMax']
         UpdateSensorValue(item, str(random.randint(start_int,end_init)))
-        
+
 
 def DoCpuTempRead(group):
 
@@ -146,7 +152,16 @@ def DoAurora(group):
             if "Daily Energy " in w and  group['Metrics'][item]['Class'] == "energy":
                 value = "%.2f" % float(w.split('=')[1].strip().split(' ')[0])
                 UpdateSensorValue(item,value)
-                
+
+def CallApi(m,b):
+    
+    req = json.loads(b)
+    if 'value' in req:
+        UpdateSensorValue(m,req['value'])
+        return '{"status":"ok","request":%s}' % b
+    else:
+        return '{"status":"error","value":"missing value field in request","request":%s}' % b
+            
 def CheckExtCmd(group):
     result = True
     for item in group['Metrics']:
@@ -195,6 +210,8 @@ def run(config):
     global Measures
     global Config
     global LastRead
+    global Callbacks
+    global Handlers
 
     logger.info("Thread started")
 
@@ -214,6 +231,24 @@ def run(config):
     logger.info("Begin sensors setup")
     for key in Sensors:
         group=Sensors[key]
+        
+        # ##### Setup Handlers ##### #
+        Callbacks[key] = None
+        Handlers[key] = None
+        
+        if group['Type'] == "random":
+            Handlers[key]=DoRandom
+        elif group['Type'] == "cputemp":
+            Handlers[key]=DoCpuTempRead
+        elif group['Type'] == "aurora":
+            Handlers[key]=DoAurora
+        elif group['Type'] == "extcmd":
+            Handlers[key]=DoExtCmd
+        elif group['Type'] == "wunderground":
+            Handlers[key]=DoWunder
+        elif group['Type'] == "api":
+            Callbacks[key]=CallApi
+            
         if group['Status'] == 'On':
             Sensors[key]['Timestamp'] = "NA"
             for item in group['Metrics']:
@@ -239,7 +274,40 @@ def run(config):
     
     Config = config
     
-    
+    @httpapp.addurl('/call/sensor/')
+    def callSensor(p,m,b=None):
+        
+        global Metrics
+        global Callbacks
+
+        p = auth.decodeUrlToken(p)
+
+        if p:
+            if b is not None:
+                try:
+                    req = json.loads(b) 
+                    fields = p.split('/')
+                    if len(fields) == 4: 
+                        if fields[3] in Metrics.keys():
+                            sensorname = Metrics[fields[3]]['SensorName']
+                            if sensorname in Callbacks.keys():
+                                if Callbacks[sensorname] is not None:
+                                    return Callbacks[sensorname](fields[3],b)
+                                else:
+                                    return '{"status":"error","value":"callback is none"}'
+                            else:
+                                return '{"status":"error","value":"callback not registered"}'
+                        else:
+                            return '{"status":"error","value":"sensor not exist"}'
+                    else:
+                        return '{"status":"error","value":"missing sensor name"}'
+                except ValueError:  # includes simplejson.decoder.JSONDecodeError
+                    return '{"status":"error","value":"json decoding error"}' 
+            else:
+                return '{"status":"error","value":"missing body"}'
+        else:
+            return '{"status":"error","value":"token authorization failure"}'        
+
     @httpapp.addurl('/get/sensor/')
     def getSensor(p,m):
         
@@ -321,11 +389,8 @@ def run(config):
         else:
             return '{"status":"error","value":"token authorization failure"}' 
         
-    @httpapp.addurl('/get/sensor/config/')
+    @httpapp.addurl('/get/config/')
     def getSensorConfig(p,m):
-        
-        global Metrics
-        global Measures
 
         p = auth.decodeUrlToken(p)
         if p:
@@ -347,32 +412,17 @@ def run(config):
                     if t-Sensors[key]['Timestamp'] > Sensors[key]['Delay']:
                         # Delayed group
                         Sensors[key]['Timestamp'] = t
-                        if group['Type'] == "random":
-                            DoRandom(group)
-                        elif group['Type'] == "cputemp":
-                            DoCpuTempRead(group)
-                        elif group['Type'] == "aurora":
-                            DoAurora(group)
-                        elif group['Type'] == "extcmd":
-                            DoExtCmd(group)
-                        elif group['Type'] == "wunderground":
-                            t = threading.Thread(target=DoWunder,args=(group,))
-                            t.start()
-                            
+                        if key in Handlers.keys():
+                            if Handlers[key] is not None:
+                                tr = threading.Thread(target=Handlers[key],args=(group,))
+                                tr.start()
                 else:
                     # Non delayed group
                     Sensors[key]['Timestamp'] = t
-                    if group['Type'] == "random":
-                        DoRandom(group)
-                    elif group['Type'] == "cputemp":
-                        DoCpuTempRead(group)
-                    elif group['Type'] == "aurora":
-                        DoAurora(group)
-                    elif group['Type'] == "extcmd":
-                        DoExtCmd(group)
-                    elif group['Type'] == "wunderground":
-                        t = threading.Thread(target=DoWunder,args=(group,))
-                        t.start()
+                    if key in Handlers.keys():
+                        if Handlers[key] is not None:
+                            tr = threading.Thread(target=Handlers[key],args=(group,))
+                            tr.start()
             
         logger.info("End sensors polling")
         time.sleep(float(config['SamplingPeriod']))

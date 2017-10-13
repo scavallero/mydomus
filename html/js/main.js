@@ -13,8 +13,12 @@ function getUrlParameter(sParam) {
     }
 }
 
-function mydomusApi(api,fn) {
-	$.post("api"+api+'/'+mydomusToken,fn)
+function mydomusApi(api,fn,method) {
+    if (method == undefined || method == 'get') {
+        $.get("api"+api+'/'+mydomusToken,fn)
+    } else if (method == 'post') {
+        $.post("api"+api+'/'+mydomusToken,fn)
+    }
 }
 
 function doSettings() {
@@ -23,7 +27,7 @@ function doSettings() {
     
     $("#field_token").val(mydomusToken);
 	
-	mydomusApi("/get/sensor/config",function(jsonresp){
+	mydomusApi("/get/config",function(jsonresp){
         var groups = jsonresp['value'];
         i = 0;
 		jQuery.each(groups, function(sensorname, val) {
@@ -42,7 +46,6 @@ function doSettings() {
                 i++;
 			});
 		});
-        console.log(data);
         $('#metrics_table').bootstrapTable({
         data: data,
         striped: true,
@@ -50,6 +53,16 @@ function doSettings() {
         pageSize: 10
         });
 	});
+    
+    $.get("api/",function(jsonresp){
+        var logs = jsonresp['log'];
+        var txt = ""
+        for (i = 0; i < logs.length; i++) { 
+            txt += logs[i] + "\n";
+        }
+        $('#logs').val(txt);
+    }); 
+    
 }
 
 function CreateDynamicGauge(sensorname,val) {
@@ -160,7 +173,7 @@ function doHistory(sensor,param) {
 	console.log("Historical Data !!");
 	console.log(sensor);
 	console.log(param);
-	mydomusApi("/get/sensor/config",function(jsonresp){
+	mydomusApi("/get/config",function(jsonresp){
         var groups = jsonresp['value'];
 		jQuery.each(groups, function(item, val) {
 			jQuery.each(val['Metrics'], function(sensorname, val) {
@@ -227,7 +240,7 @@ function doHistory(sensor,param) {
 
 function doDashboard() {
     
-	mydomusApi("/get/sensor/config",function(jsonresp){
+	mydomusApi("/get/config",function(jsonresp){
         var groups = jsonresp['value'];
         var html='<div class="panel-group" id="accordion">'
         jQuery.each(groups, function(item, val) {

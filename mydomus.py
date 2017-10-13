@@ -32,7 +32,21 @@ import logging.handlers
 import dbutil
 import auth
 
+## Self defined summary log handler ##
 
+class SummaryHandler(logging.Handler):
+
+    def __init__(self,bufferlen=100):
+        logging.Handler.__init__(self)
+        self.bufferlen = bufferlen
+        self.buffered_entry = []
+        
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.buffered_entry.append(log_entry)
+        if len(self.buffered_entry) > self.bufferlen:
+            del self.buffered_entry[0]
+        
 ## SETUP DEFAULTS AND LOGGER ##
 
 CONFIG_DIR = "."
@@ -59,11 +73,15 @@ logger = logging.getLogger("Mydomus")
 logger.setLevel(LOG_LEVEL)
 handler_logfile = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=30)
 handler_stream = logging.StreamHandler()
+handler_summary = SummaryHandler()
+handler_summary.setLevel(logging.ERROR)
 formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(module)-10s %(message)s')
 handler_logfile.setFormatter(formatter)
 handler_stream.setFormatter(formatter)
+handler_summary.setFormatter(formatter)
 logger.addHandler(handler_logfile)
 logger.addHandler(handler_stream)
+logger.addHandler(handler_summary)
 
 if "RedirectOutput" in config.keys():
     if config["RedirectOutput"]:
@@ -74,7 +92,12 @@ if "RedirectOutput" in config.keys():
 
 @httpapp.addurl('/')
 def root(p,m):
-    return '{"status":"ok","version":"%s"}' % VERSION
+    msg = {}
+    msg["status"]="ok",
+    msg["version"]=VERSION
+    msg["log"] = handler_summary.buffered_entry
+
+    return json.dumps(msg, sort_keys=True, indent=4)
 
 
 
