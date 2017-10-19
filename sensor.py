@@ -155,11 +155,20 @@ def DoAurora(group):
 
 def DoWethermo(group):
 
-    for item in group['Metrics']:
+    if ('Address' in group.keys()):
+        resp = requests.get("http://%s/info")
+        data = resp.json()
+        
+        for item in group['Metrics']:
 
-        sensor = group['Metrics'][item]
-        UpdateSensorValue(item,"%.1f" % (10+random.randint(0,100)/10.0))
- 
+            sensor = group['Metrics'][item]
+            if sensor['Class'] == "wethermo_temp":
+                value = str(data["Temp"])
+                
+            UpdateSensorValue(item, value)
+    else:
+        logger.error("Missing Address")
+        
 def CallApi(m,b):
     
     req = json.loads(b)
