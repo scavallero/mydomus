@@ -153,6 +153,13 @@ def DoAurora(group):
                 value = "%.2f" % float(w.split('=')[1].strip().split(' ')[0])
                 UpdateSensorValue(item,value)
 
+def DoWethermo(group):
+
+    for item in group['Metrics']:
+
+        sensor = group['Metrics'][item]
+        UpdateSensorValue(item,"%.1f" % (10+random.randint(0,100)/10.0))
+ 
 def CallApi(m,b):
     
     req = json.loads(b)
@@ -246,6 +253,8 @@ def run(config):
             Handlers[key]=DoExtCmd
         elif group['Type'] == "wunderground":
             Handlers[key]=DoWunder
+        elif group['Type'] == "wethermo":
+            Handlers[key]=DoWethermo
         elif group['Type'] == "api":
             Callbacks[key]=CallApi
             

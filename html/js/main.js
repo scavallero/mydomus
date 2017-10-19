@@ -80,7 +80,7 @@ function CreateDynamicGauge(sensorname,val) {
 				valueSuffix: "  "+newVal.unit
 			}
 		}];
-		
+        
 		switch (val.Class) {
 			case 'temp_c':
 				style.yAxis= y_temperature;
@@ -108,19 +108,30 @@ function CreateDynamicGauge(sensorname,val) {
 		} else {
 			style.yAxis.title.text = "";
 		}
-		
-		var chart1 = Highcharts.chart('gauge_'+sensorname,style,function (chart) {
-			if (!chart.renderer.forExport) {
-				setInterval(function () {
-					if(chart.series) { // Prevent calls on false redraw
-						var point = chart.series[0].points[0];
-						mydomusApi("/get/sensor/"+sensorname,function(newVal){
-                            point.update(newVal.value); 
-						});
-					}
-				}, 30000);
-			}
-		});
+        
+        if (val.Class == 'wethermo_temp') {
+            var wt = WeThermo('gauge_'+sensorname);
+            wt.show(parseFloat(newVal.value));
+            setInterval(function () {
+                mydomusApi("/get/sensor/"+sensorname,function(newVal){
+                    wt.show(parseFloat(newVal.value));
+                });
+            }, 30000);
+            
+        } else {
+            var chart1 = Highcharts.chart('gauge_'+sensorname,style,function (chart) {
+                if (!chart.renderer.forExport) {
+                    setInterval(function () {
+                        if(chart.series) { // Prevent calls on false redraw
+                            var point = chart.series[0].points[0];
+                            mydomusApi("/get/sensor/"+sensorname,function(newVal){
+                                point.update(newVal.value); 
+                            });
+                        }
+                    }, 30000);
+                }
+            });
+        }
 	});          
 }
 	
