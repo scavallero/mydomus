@@ -156,7 +156,7 @@ def DoAurora(group):
 def DoWethermo(group):
 
     if ('Address' in group.keys()):
-        resp = requests.get("http://%s/info")
+        resp = requests.get("http://%s/info" % group['Address'])
         data = resp.json()
         
         for item in group['Metrics']:
