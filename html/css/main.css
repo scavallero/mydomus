@@ -40,6 +40,14 @@ th {
   color: #FFFFFF;
 }
 
+.page-list {
+    color: white;
+}
+
+.pagination-info {
+    color: white;
+}
+
 /* ****** Navbar ***** */
 
 .navbar {

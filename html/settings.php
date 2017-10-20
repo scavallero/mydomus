@@ -94,12 +94,11 @@ require_once('authenticate.php');
 
 			</div>
 		</div>
-		<br>
 		<div>
 			<a href="index.php" class="btn btn-success">Apply</a> <a href="index.php" class="btn btn-primary">Cancel</a>
 		</div>
         <br>
-        <h2> System Logs </h3>
+        <h2> System Errors </h3>
         <div>
             <textarea class="form-control" rows="10" id="logs" readonly></textarea>
         </div>
