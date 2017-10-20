@@ -62,8 +62,8 @@ SevenSegment = function(id,options) {
     draw_degree = function(){
         
         var color = [this.options.background,this.options.onColor];
-        var txt = '<circle cx="20" cy="10" r="10" style="fill: '+color[1]+';"></circle>'
-        txt += '<circle cx="20" cy="10" r="5" style="fill: '+color[0]+';"></circle>'
+        var txt = '<circle cx="5" cy="10" r="10" style="fill: '+color[1]+';"></circle>'
+        txt += '<circle cx="5" cy="10" r="5" style="fill: '+color[0]+';"></circle>'
         
         return txt;
     }
@@ -166,7 +166,7 @@ WeThermo = function(id) {
         "leftLabelDigit":1,
         "rightLabelDigit":1,
         "onColor":"#0000ff",
-        "offColor":"#000022"
+        "offColor":"#000033"
     });
     
     this.show = function(value) {
