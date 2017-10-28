@@ -83,14 +83,14 @@ SevenSegment = function(id,options) {
         return html;
     }
     
-    this.draw_label = function(opt,onColor) {
+    this.draw_label = function(opt) {
         var html = html_start;
         if (opt.indexOf("degree") >= 0)
             html+=this.draw_degree();
         if (opt.indexOf("flame") >= 0)
             html+=draw_glyphicon(10,35,'&#xe104;','#ff0000',36);
         if (opt.indexOf("off") >= 0)
-            html+=draw_glyphicon(10,80,'&#xe017;',onColor,36);
+            html+=draw_glyphicon(10,80,'&#xe017;',this.options.onColor,36);
         if (opt.indexOf("auto") >= 0)
             html+=draw_glyphicon(5,75,'AUTO','#00ff00',16);
         if (opt.indexOf("heat") >= 0)
@@ -138,7 +138,7 @@ SevenSegment = function(id,options) {
                 html += this.draw_digit(value_pad.substring(i,i+1),false);
         }
         for (i=0;i<this.options.rightLabelDigit;i++)
-            html += this.draw_label(options.rightLabel,this.options.onColor);
+            html += this.draw_label(options.rightLabel);
         $('#'+this.id).html(html);
     };    
     
