@@ -192,15 +192,12 @@ def CallWethermo(m,b):
         
     req = json.loads(b)
     group = Sensors[Metrics[m]['SensorName']]
-    logger.info("B")
     
     if 'value' in req:
         if ('Address' in group.keys()):
             if req['value'] == 4:
                 resp = requests.get("http://%s/display" % group['Address'])
-                logger.info("A")
-                logger.info(resp.text)
-                return '{"status":"ok","request":%s,"response":%s}' % (b,resp.text)
+                return '{"status":"ok","request":%s,"response":"%s"}' % (b,resp.text)
         else:
             return '{"status":"error","value":"missing address in wethermo config","request":%s}' % b   
     else:
