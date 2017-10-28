@@ -187,7 +187,9 @@ def CallWethermo(m,b):
     global Config
     
     Sensors = Config['Sensors']
-    
+
+    logger.info("WeThermo call -> Metrics: %s, Body: %s" % (m,b))
+        
     req = json.loads(b)
     group = Sensors[Metrics[m]['SensorName']]
     
