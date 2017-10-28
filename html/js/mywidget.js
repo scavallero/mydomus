@@ -160,7 +160,7 @@ WeThermo = function(sensorname) {
             html += '    </div>';
             html += '    <br>';
             html += '</div>';
-    $('#'+id).html(html);
+    $('#gauge_'+sensorname).html(html);
     
     this.display = new SevenSegment('seven_'+sensorname,{
         "leftDigit":2,
