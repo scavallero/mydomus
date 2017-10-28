@@ -25,7 +25,7 @@ function mydomusApi(api,fn,method,b) {
 }
 
 function callSensor(s,param) {
-		mydomusApi("/call/semsor/"+s,function(jsonresp){
+		mydomusApi("/call/sensor/"+s,function(jsonresp){
 			console.log(jsonresp);
 		},'post','{"value":'+param+'}');
 }
