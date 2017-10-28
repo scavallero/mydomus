@@ -142,12 +142,11 @@ SevenSegment = function(id,options) {
         $('#'+this.id).html(html);
     };    
     
-    return r;
+    return this;
 };
 
 WeThermo = function(sensorname) {
     
-    r = {}
     var html = '<div style="background-color: #000000;">';
             html += '    <br>';
             html += '    <div id="seven_'+sensorname+'"></div>';
@@ -156,7 +155,7 @@ WeThermo = function(sensorname) {
             html += '        <button type="button" class="btn btn-success">Auto</button>';
             html += '        <button type="button" class="btn btn-danger">Heat</button>';
             html += '        <button type="button" class="btn btn-primary">Off</button>';
-			html += '        <br><button type="button" class="btn btn-default">Reset Display</button>';
+			html += '        <br><br><button type="button" class="btn btn-default">Reset Display</button>';
             html += '    </div>';
             html += '    <br>';
             html += '</div>';
@@ -179,5 +178,5 @@ WeThermo = function(sensorname) {
         });
     };
     
-    return r;
+    return this;
 };
