@@ -40,7 +40,7 @@ SevenSegment = function(id,options) {
     
     var html_end = '</svg></div>';
     
-    draw_segment = function(digit,point) {
+    this.draw_segment = function(digit,point) {
         
         digit = typeof digit !== 'undefined' ? digit : 0;
         point = typeof point !== 'undefined' ? point : false;
@@ -59,7 +59,7 @@ SevenSegment = function(id,options) {
         return txt;
     }
     
-    draw_degree = function(){
+    this.draw_degree = function(){
         
         var color = [this.options.background,this.options.onColor];
         var txt = '<circle cx="5" cy="10" r="10" style="fill: '+color[1]+';"></circle>'
@@ -75,18 +75,18 @@ SevenSegment = function(id,options) {
     }
     
     
-    draw_digit = function(digit,point) {
+    this.draw_digit = function(digit,point) {
         var html = html_start;
-        html += draw_segment(digit,point);
+        html += this.draw_segment(digit,point);
         html += html_end;
         
         return html;
     }
     
-    draw_label = function(opt,onColor) {
+    this.draw_label = function(opt,onColor) {
         var html = html_start;
         if (opt.indexOf("degree") >= 0)
-            html+=draw_degree();
+            html+=this.draw_degree();
         if (opt.indexOf("flame") >= 0)
             html+=draw_glyphicon(10,35,'&#xe104;','#ff0000',36);
         if (opt.indexOf("off") >= 0)
@@ -129,16 +129,16 @@ SevenSegment = function(id,options) {
         
         var html = "";
         for (i=0;i<this.options.leftLabelDigit;i++)
-            html += draw_label(options.leftLabel);
+            html += this.draw_label(options.leftLabel);
         for (i=0;i<ndigit;i++) {
             if (i == (this.options.leftDigit-1) && this.options.rightDigit > 0) {
-                html += draw_digit(value_pad.substring(i,i+1),true);
+                html += this.draw_digit(value_pad.substring(i,i+1),true);
             }
             else
-                html += draw_digit(value_pad.substring(i,i+1),false);
+                html += this.draw_digit(value_pad.substring(i,i+1),false);
         }
         for (i=0;i<this.options.rightLabelDigit;i++)
-            html += draw_label(options.rightLabel,this.options.onColor);
+            html += this.draw_label(options.rightLabel,this.options.onColor);
         $('#'+this.id).html(html);
     };    
     
