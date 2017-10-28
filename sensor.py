@@ -182,8 +182,25 @@ def DoWethermo(group):
         logger.error("Missing Address field for WeThermo")
 
 def CallWethermo(m,b):
+
+    global Metrics
+    global Config
     
-    return '{"status":"ok","request":%s}' % b
+    Sensors = Config['Sensors']
+    
+    req = json.loads(b)
+    group = Sensors[Metrics[m]['SensorName']]
+    
+    if 'value' in req:
+        if ('Address' in group.keys()):
+            if req['value'] == 4:
+                resp = requests.get("http://%s/display" % group['Address'])
+                data = resp.json()
+                return '{"status":"ok","request":%s,"response":%s}' % (b,resp.text)
+        else:
+            return '{"status":"error","value":"missing address in wethermo config","request":%s}' % b   
+    else:
+        return '{"status":"error","value":"missing value field in request","request":%s}' % b
     
 #############################################################
 #####                   SDM230 Sensor                   #####
