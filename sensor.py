@@ -181,6 +181,10 @@ def DoWethermo(group):
     else:
         logger.error("Missing Address field for WeThermo")
 
+def CallWethermo(m,b):
+    
+    return '{"status":"ok","request":%s}' % b
+    
 #############################################################
 #####                   SDM230 Sensor                   #####
 #############################################################
@@ -340,6 +344,7 @@ def run(config):
             Handlers[key]=DoWunder
         elif group['Type'] == "wethermo":
             Handlers[key]=DoWethermo
+            Callbacks[key]=CallWethermo
         elif group['Type'] == "sdm230":
             Handlers[key]=DoSdm230
         elif group['Type'] == "api":

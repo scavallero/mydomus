@@ -147,15 +147,17 @@ SevenSegment = function(id,options) {
 
 WeThermo = function(sensorname) {
     
+	s = "'"+sensorname+"'";
+	
     var html = '<div style="background-color: #000000;">';
             html += '    <br>';
             html += '    <div id="seven_'+sensorname+'"></div>';
             html += '    <br>';
             html += '    <div align="center">';
-            html += '        <button type="button" class="btn btn-success">Auto</button>';
-            html += '        <button type="button" class="btn btn-danger">Heat</button>';
-            html += '        <button type="button" class="btn btn-primary">Off</button>';
-			html += '        <br><br><button type="button" class="btn btn-default">Reset Display</button>';
+            html += '        <button type="button" class="btn btn-success" onclick="callSensor('+s+',1)";>Auto</button>';
+            html += '        <button type="button" class="btn btn-danger" onclick="callSensor('+s+',2)";>Heat</button>';
+            html += '        <button type="button" class="btn btn-primary" onclick="callSensor('+s+',3)";>Off</button>';
+			html += '        <br><br><button type="button" class="btn btn-default" onclick="callSensor('+s+',4)";>Reset Display</button>';
             html += '    </div>';
             html += '    <br>';
             html += '</div>';
@@ -171,7 +173,6 @@ WeThermo = function(sensorname) {
     });
     
     this.draw = function(value) {
-        console.log(value);
         this.display.draw(value,{
                 "rightLabel":["degree","auto","heat"],
                 "leftLabel":["flame","off"]

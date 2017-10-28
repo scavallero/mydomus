@@ -13,12 +13,21 @@ function getUrlParameter(sParam) {
     }
 }
 
-function mydomusApi(api,fn,method) {
+function mydomusApi(api,fn,method,b) {
     if (method == undefined || method == 'get') {
-        $.get("api"+api+'/'+mydomusToken,fn)
+        $.get("api"+api+'/'+mydomusToken,fn);
     } else if (method == 'post') {
-        $.post("api"+api+'/'+mydomusToken,fn)
+		if (b == undefined)
+			$.post("api"+api+'/'+mydomusToken,fn);
+		else
+			$.post("api"+api+'/'+mydomusToken,b,fn)
     }
+}
+
+function callSensor(s,param) {
+		mydomusApi("/call/semsor/"+s,function(jsonresp){
+			console.log(jsonresp);
+		},'post','{"value":'+param+'}');
 }
 
 function doSettings() {
