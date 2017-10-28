@@ -420,7 +420,7 @@ def run(config):
                     else:
                         return '{"status":"error","value":"missing sensor name"}'
                 except ValueError:  # includes simplejson.decoder.JSONDecodeError
-                    return '{"status":"error","value":"json decoding error"}' 
+                    return '{"status":"error","value":"json decoding error","body":"%s"}' % b 
             else:
                 return '{"status":"error","value":"missing body"}'
         else:
