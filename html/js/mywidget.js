@@ -142,25 +142,27 @@ SevenSegment = function(id,options) {
         $('#'+this.id).html(html);
     };    
     
-    return this;
+    return r;
 };
 
-WeThermo = function(id) {
+WeThermo = function(sensorname) {
     
+    r = {}
     var html = '<div style="background-color: #000000;">';
             html += '    <br>';
-            html += '    <div id="_'+id+'"></div>';
+            html += '    <div id="seven_'+sensorname+'"></div>';
             html += '    <br>';
             html += '    <div align="center">';
             html += '        <button type="button" class="btn btn-success">Auto</button>';
             html += '        <button type="button" class="btn btn-danger">Heat</button>';
             html += '        <button type="button" class="btn btn-primary">Off</button>';
+			html += '        <br><button type="button" class="btn btn-default">Reset Display</button>';
             html += '    </div>';
             html += '    <br>';
             html += '</div>';
     $('#'+id).html(html);
     
-    this.display = SevenSegment('_'+id,{
+    this.display = new SevenSegment('seven_'+sensorname,{
         "leftDigit":2,
         "rightDigit":1,
         "leftLabelDigit":1,
@@ -169,7 +171,7 @@ WeThermo = function(id) {
         "offColor":"#000033"
     });
     
-    this.show = function(value) {
+    this.draw = function(value) {
         console.log(value);
         this.display.draw(value,{
                 "rightLabel":["degree","auto","heat"],
@@ -177,5 +179,5 @@ WeThermo = function(id) {
         });
     };
     
-    return this;
+    return r;
 };

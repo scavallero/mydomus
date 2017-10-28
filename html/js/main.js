@@ -96,6 +96,7 @@ function CreateDynamicGauge(sensorname,val) {
 			break;
 			
 			case 'power':
+            case 'active_power':
 				style.yAxis= y_power;
 			break;
 			
@@ -110,11 +111,11 @@ function CreateDynamicGauge(sensorname,val) {
 		}
         
         if (val.Class == 'wethermo_temp') {
-            var wt = WeThermo('gauge_'+sensorname);
-            wt.show(parseFloat(newVal.value));
+            var wt = new WeThermo(sensorname);
+            wt.draw(parseFloat(newVal.value));
             setInterval(function () {
                 mydomusApi("/get/sensor/"+sensorname,function(newVal){
-                    wt.show(parseFloat(newVal.value));
+                    wt.draw(parseFloat(newVal.value));
                 });
             }, 30000);
             

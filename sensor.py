@@ -78,6 +78,10 @@ def UpdateSensorValue(Name,Value):
     else:
         logger.warning('Update sensor [%s] failure' % Name)
 
+#############################################################
+#####               Wunderground Sensor                 #####
+#############################################################
+        
 def DoWunder(group):
 
     if ('ApiKey' in group.keys()) and ('IDStation' in group.keys()):
@@ -136,6 +140,10 @@ def DoCpuTempRead(group):
         output, error = process.communicate()
         UpdateSensorValue(item,output.strip())
 
+#############################################################
+#####                  Aurora Sensor                    #####
+#############################################################
+        
 def DoAurora(group):
 
     bashCommand = "aurora -a %d -Y6 -d0 -e %s " % (group['Address'],group['Port'])
@@ -153,6 +161,10 @@ def DoAurora(group):
                 value = "%.2f" % float(w.split('=')[1].strip().split(' ')[0])
                 UpdateSensorValue(item,value)
 
+#############################################################
+#####                  WeThermo Sensor                  #####
+#############################################################
+                
 def DoWethermo(group):
 
     if ('Address' in group.keys()):
@@ -167,7 +179,67 @@ def DoWethermo(group):
                 
             UpdateSensorValue(item, value)
     else:
-        logger.error("Missing Address")
+        logger.error("Missing Address field for WeThermo")
+
+#############################################################
+#####                   SDM230 Sensor                   #####
+#############################################################
+
+def DoSdm230(group):
+
+    try:
+        import minimalmodbus
+    except:
+        logger.error("Missing required library (minimalmodbus) for SDM230 sensor ")
+        group['Status'] = "Off" # Disable sensor 
+        return
+
+    if "Port" not in group.keys():
+        logger.error("Missing Port field for SDM230 sensor ")
+        group['Status'] = "Off" # Disable sensor
+        return
+
+    if "Baudrate" not in group.keys():
+        logger.error("Missing Baudrate field for SDM230 sensor ")
+        group['Status'] = "Off" # Disable sensor
+        return
+
+    try:
+        rs485 = minimalmodbus.Instrument(group["Port"], 1)
+        rs485.serial.baudrate = group["Baudrate"]
+        rs485.serial.bytesize = 8
+        rs485.serial.parity = minimalmodbus.serial.PARITY_NONE
+        rs485.serial.stopbits = 1
+        rs485.serial.timeout = 1
+        rs485.debug = False
+        rs485.mode = minimalmodbus.MODE_RTU
+    except:
+        logger.error("Can't open SDM230 device")
+        return
+
+    for item in group['Metrics']:
+
+        sensor = group['Metrics'][item]
+        if sensor['Class'] == "active_power":
+            value = str(rs485.read_float(12, functioncode=4, numberOfRegisters=2))
+            UpdateSensorValue(item, value)
+        if sensor['Class'] == "volts":
+            value = rs485.read_float(0, functioncode=4, numberOfRegisters=2)
+            UpdateSensorValue(item, value)
+        if sensor['Class'] == "current":
+            value = rs485.read_float(6, functioncode=4, numberOfRegisters=2)
+            UpdateSensorValue(item, value)
+        if sensor['Class'] == "reactive_power":
+            value = rs485.read_float(24, functioncode=4, numberOfRegisters=2)
+            UpdateSensorValue(item, value)
+        if sensor['Class'] == "power_factor":
+            value = rs485.read_float(30, functioncode=4, numberOfRegisters=2)
+            UpdateSensorValue(item, value)
+
+
+#############################################################
+#####                External API Sensor                #####
+#############################################################
         
 def CallApi(m,b):
     
@@ -177,7 +249,11 @@ def CallApi(m,b):
         return '{"status":"ok","request":%s}' % b
     else:
         return '{"status":"error","value":"missing value field in request","request":%s}' % b
-            
+
+#############################################################
+#####                External CMD Sensor                #####
+#############################################################
+    
 def CheckExtCmd(group):
     result = True
     for item in group['Metrics']:
@@ -264,6 +340,8 @@ def run(config):
             Handlers[key]=DoWunder
         elif group['Type'] == "wethermo":
             Handlers[key]=DoWethermo
+        elif group['Type'] == "sdm230":
+            Handlers[key]=DoSdm230
         elif group['Type'] == "api":
             Callbacks[key]=CallApi
             
@@ -421,7 +499,7 @@ def run(config):
     # Main sensor loop
     ######################################################
     while(True):
-        logger.info("Begin sensosrs polling")
+        logger.info("Sensosrs polling")
         t = time.time()
         for key in Sensors:
             group=Sensors[key]
@@ -442,5 +520,4 @@ def run(config):
                             tr = threading.Thread(target=Handlers[key],args=(group,))
                             tr.start()
             
-        logger.info("End sensors polling")
         time.sleep(float(config['SamplingPeriod']))
