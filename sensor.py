@@ -32,6 +32,7 @@ import pattern
 import sensorload
 import os
 import auth
+import traceback
 
 
 #########################################################################
@@ -211,7 +212,9 @@ def DoSdm230(group):
 
     try:
         import minimalmodbus
+        pass
     except:
+        logger.error(traceback.format_exc())
         logger.error("Missing required library (minimalmodbus) for SDM230 sensor ")
         group['Status'] = "Off" # Disable sensor 
         return
@@ -243,19 +246,19 @@ def DoSdm230(group):
 
         sensor = group['Metrics'][item]
         if sensor['Class'] == "active_power":
-            value = str(rs485.read_float(12, functioncode=4, numberOfRegisters=2))
+            value = "%.1f" % rs485.read_float(12, functioncode=4, numberOfRegisters=2)
             UpdateSensorValue(item, value)
         if sensor['Class'] == "volts":
-            value = rs485.read_float(0, functioncode=4, numberOfRegisters=2)
+            value = "%.1f" % rs485.read_float(0, functioncode=4, numberOfRegisters=2)
             UpdateSensorValue(item, value)
         if sensor['Class'] == "current":
-            value = rs485.read_float(6, functioncode=4, numberOfRegisters=2)
+            value = "%.1f" % rs485.read_float(6, functioncode=4, numberOfRegisters=2)
             UpdateSensorValue(item, value)
         if sensor['Class'] == "reactive_power":
-            value = rs485.read_float(24, functioncode=4, numberOfRegisters=2)
+            value = "%.1f" % rs485.read_float(24, functioncode=4, numberOfRegisters=2)
             UpdateSensorValue(item, value)
         if sensor['Class'] == "power_factor":
-            value = rs485.read_float(30, functioncode=4, numberOfRegisters=2)
+            value = "%.1f" % rs485.read_float(30, functioncode=4, numberOfRegisters=2)
             UpdateSensorValue(item, value)
 
 
