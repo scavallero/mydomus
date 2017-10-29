@@ -212,9 +212,8 @@ def DoSdm230(group):
 
     try:
         import minimalmodbus
-        pass
     except:
-        logger.error(traceback.format_exc())
+        #logger.error(traceback.format_exc())
         logger.error("Missing required library (minimalmodbus) for SDM230 sensor ")
         group['Status'] = "Off" # Disable sensor 
         return
