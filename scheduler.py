@@ -68,7 +68,7 @@ def run(config):
 
         ###### Five minutes routine ######
 
-        for name in sensor.AuxiliaryData
+        for name in sensor.AuxiliaryData:
             # Begin critical thread safe operation
             sensor.AuxiliaryData[name] = []
             # End critical thread safe operation
