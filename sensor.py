@@ -185,6 +185,7 @@ def DoWethermo(group):
     if ('Address' in group.keys()):
         resp = requests.get("http://%s/info" % group['Address'])
         data = resp.json()
+        UpdateAuxiliaryData(group['Name'],data)
         
         for item in group['Metrics']:
 
@@ -361,6 +362,7 @@ def run(config):
     
     logger.info("Begin sensors setup")
     for key in Sensors:
+        Sensors[key]['Name'] = key
         group=Sensors[key]
         AuxiliaryData[key] = []
         
