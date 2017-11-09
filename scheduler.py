@@ -67,7 +67,12 @@ def run(config):
         logger.info("Day interval %d " % iday)
 
         ###### Five minutes routine ######
-        
+
+        for name in sensor.AuxiliaryData
+            # Begin critical thread safe operation
+            sensor.AuxiliaryData[name] = []
+            # End critical thread safe operation
+            
         for name in sensor.Measures:
 
             # Begin critical thread safe operation

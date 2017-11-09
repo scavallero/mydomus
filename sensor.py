@@ -43,6 +43,7 @@ logger = logging.getLogger("Mydomus")
 
 Metrics = {}
 Measures = {}
+AuxiliaryData = {}
 LastRead = {}
 Config = {}
 Callbacks = {}
@@ -78,6 +79,19 @@ def UpdateSensorValue(Name,Value):
             logger.warning('Update sensor [%s] failure for value [%s]' % (Name,Value))
     else:
         logger.warning('Update sensor [%s] failure' % Name)
+
+def UpdateAuxiliaryData(Name,Value):
+    global AuxiliaryData
+    global Config
+
+    Sensors = config['Sensors']
+    timestamp = time.time()
+    if Name in Sensors.keys():
+        AuxiliaryData[Name].append((Value,timestamp))
+        logger.info('Auxiliary data for group [%s] success' % Name)
+    else:
+        logger.warning('Auxiliary data for group [%s] failure' % Name)
+
 
 #############################################################
 #####               Wunderground Sensor                 #####
@@ -324,6 +338,7 @@ def run(config):
 
     global Metrics
     global Measures
+    global AuxiliaryData
     global Config
     global LastRead
     global Callbacks
@@ -347,6 +362,7 @@ def run(config):
     logger.info("Begin sensors setup")
     for key in Sensors:
         group=Sensors[key]
+        AuxiliaryData[key] = []
         
         # ##### Setup Handlers ##### #
         Callbacks[key] = None
