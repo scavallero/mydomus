@@ -84,7 +84,7 @@ def UpdateAuxiliaryData(Name,Value):
     global AuxiliaryData
     global Config
 
-    Sensors = config['Sensors']
+    Sensors = Config['Sensors']
     timestamp = time.time()
     if Name in Sensors.keys():
         AuxiliaryData[Name].append((Value,timestamp))
