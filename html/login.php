@@ -7,9 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST["user"]) && !empty($_POST["password"])) {
         $user = $_POST["user"];
         $password = md5($_POST["password"]);    
-        $string = file_get_contents("mydomus.conf");
-        $conf = json_decode($string, true);
-        $result = file_get_contents('http://127.0.0.1:'.strval($conf['ServerPort']).'/verify/'.$user.'/'.$password);
+        $result = file_get_contents('http://127.0.0.1/mydomus/api/verify/'.$user.'/'.$password);
         $result_json = json_decode($result, true);
         if($result_json['status'] == 'ok') {
             $_SESSION['authenticated'] = 'true';
